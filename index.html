@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Unity Arena 2026 - Standings & Squads</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#000000",
+                    "on-surface": "#f3eedd",
+                    "primary-container": "#dfb33a",
+                    "inverse-primary": "#bda03c",
+                    "background": "#000000",
+                    "on-primary-container": "#000000",
+                    "on-primary-fixed": "#000000",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#ffffff",
+                    "on-secondary-fixed": "#ffffff",
+                    "surface-dim": "#0d0d0d",
+                    "primary-fixed": "#ffd700",
+                    "tertiary-container": "#e5e5e5",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#050505",
+                    "tertiary-fixed-dim": "#cccccc",
+                    "surface-tint": "#ffd700",
+                    "on-surface-variant": "#a8a295",
+                    "secondary-fixed-dim": "#ff3b30",
+                    "secondary-container": "#d82a2a",
+                    "surface-container-highest": "#2a2a2a",
+                    "on-tertiary-container": "#d82a2a",
+                    "on-background": "#ffffff",
+                    "secondary-fixed": "#ff3b30",
+                    "primary": "#e5b842",
+                    "surface-container-low": "#0f0f0f",
+                    "on-primary": "#000000",
+                    "inverse-on-surface": "#1e1e1e",
+                    "surface-container-high": "#1c1c1c",
+                    "on-secondary-fixed-variant": "#ffffff",
+                    "inverse-surface": "#ffffff",
+                    "surface": "#0d0d0d",
+                    "tertiary": "#ffffff",
+                    "tertiary-fixed": "#ffffff",
+                    "on-primary-fixed-variant": "#000000",
+                    "on-error": "#690005",
+                    "primary-fixed-dim": "#ffd700",
+                    "on-tertiary-fixed-variant": "#ffffff",
+                    "error-container": "#93000a",
+                    "on-secondary-container": "#ffffff",
+                    "secondary": "#d82a2a",
+                    "outline": "#333333",
+                    "surface-container": "#141414",
+                    "surface-variant": "#222222",
+                    "surface-bright": "#1f1f1f",
+                    "outline-variant": "#444444",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "base": "8px",
+                    "xl": "80px",
+                    "md": "24px",
+                    "xs": "4px",
+                    "sm": "12px",
+                    "lg": "48px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "body-md": ["Work Sans"],
+                    "stats-numeric": ["Work Sans"],
+                    "display-sm": ["Sora"],
+                    "label-caps": ["Work Sans"],
+                    "body-lg": ["Work Sans"],
+                    "headline-lg-mobile": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "display-lg": ["Sora"],
+                    "headline-md": ["Sora"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "stats-numeric": ["20px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-sm": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.45);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .stadium-glow {
+            background: radial-gradient(circle at center, rgba(229, 184, 66, 0.12) 0%, transparent 70%);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .active-tab {
+            background: #e5b842;
+            color: #000000;
+            box-shadow: 0 0 16px rgba(229, 184, 66, 0.3);
+        }
+        .modal-blur {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md selection:bg-primary selection:text-on-primary overflow-x-hidden">
+    <!-- Atmospheric Background -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px]"></div>
+        <div class="absolute bottom-[10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-on-tertiary-container/10 blur-[150px]"></div>
+    </div>
+
+    <!-- Header / Top Bar -->
+    <header class="sticky top-0 z-40 w-full px-4 py-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20 animate-pulse">
+                <span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">sports_soccer</span>
+            </div>
+            <div>
+                <h1 class="font-display-sm text-[22px] leading-tight tracking-tight uppercase text-primary">Unity Arena</h1>
+                <p class="font-label-caps text-on-surface-variant text-[10px]">World Cup Hub • Live API Integration</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <!-- Season Selector Dropdown -->
+            <select id="season-selector" class="bg-surface-container-low border border-white/10 rounded-xl text-on-surface font-label-caps text-[11px] px-3 py-2 outline-none focus:border-primary active:scale-95 transition-all cursor-pointer">
+                <option value="2026" selected>2026 Preview</option>
+                <option value="2022">2022 Tournament</option>
+                <option value="2018">2018 Tournament</option>
+                <option value="2014">2014 Tournament</option>
+            </select>
+        </div>
+    </header>
+
+    <main class="relative z-10 px-4 pb-32">
+        <!-- Hero Title Section -->
+        <section class="py-6 flex flex-col gap-2">
+            <div class="flex items-end justify-between">
+                <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">Standings</h2>
+                <span id="data-source-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 text-primary font-label-caps text-[10px]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                    LIVE DATABASE
+                </span>
+            </div>
+            <p class="text-on-surface-variant text-[13px]">Select a group stage bracket below. Click on any national team to inspect their squad and manager details live from the API.</p>
+            
+            <!-- Group Selector (Horizontal Swipe) -->
+            <div id="group-tabs" class="flex overflow-x-auto gap-2.5 no-scrollbar py-2 mask-gradient-edge scroll-smooth">
+                <!-- Tabs generated dynamically -->
+            </div>
+        </section>
+
+        <!-- Standings Table -->
+        <section class="mb-8 relative">
+            <div id="table-loader" class="hidden absolute inset-0 flex items-center justify-center bg-background/50 z-20 backdrop-blur-sm rounded-2xl">
+                <div class="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+            </div>
+            
+            <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                <!-- Table Header -->
+                <div class="grid grid-cols-[2.5rem_1fr_2.5rem_2.5rem_2.5rem] px-4 py-4 bg-white/5 border-b border-white/10 text-on-surface-variant font-label-caps text-[11px] tracking-widest">
+                    <span>POS</span>
+                    <span>TEAM</span>
+                    <span class="text-center">W</span>
+                    <span class="text-center">GD</span>
+                    <span class="text-right">PTS</span>
+                </div>
+                <!-- Table Body -->
+                <div id="standings-tbody" class="divide-y divide-white/5">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+            
+            <!-- Table Legend -->
+            <div class="mt-4 flex gap-4 text-[11px] font-label-caps text-on-surface-variant px-2">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-primary"></span>
+                    QUALIFIED
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-white/20"></span>
+                    ELIMINATED
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Match Card -->
+        <section class="mb-8">
+            <h3 class="font-headline-md text-on-surface mb-4">Spotlight Matches</h3>
+            <div id="spotlight-matches" class="space-y-4">
+                <!-- Filled dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Team Details / Squad Modal -->
+    <div id="team-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center sm:items-center p-0 sm:p-4 modal-blur transition-opacity duration-300">
+        <!-- Close trigger background -->
+        <div class="absolute inset-0 cursor-pointer" onclick="closeTeamModal()"></div>
+        
+        <!-- Modal Card Container -->
+        <div class="relative w-full max-w-2xl bg-surface-container-low sm:rounded-3xl rounded-t-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col max-h-[85vh] sm:max-h-[80vh] transition-transform duration-300 translate-y-full" id="modal-container">
+            
+            <!-- Close Button -->
+            <button onclick="closeTeamModal()" class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center border border-white/10 text-white active:scale-90 transition-transform">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+
+            <!-- Loading overlay inside modal -->
+            <div id="modal-loader" class="absolute inset-0 bg-surface-container-low/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-3">
+                <div class="w-10 h-10 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+                <p class="font-label-caps text-[11px] text-primary tracking-widest">FETCHING SQUAD DETAILS...</p>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="overflow-y-auto no-scrollbar flex-1 pb-8">
+                <!-- Banner Image Header -->
+                <div class="relative w-full aspect-[21/9] bg-surface-container-highest overflow-hidden">
+                    <img id="modal-banner" class="w-full h-full object-cover opacity-70" src="" alt="Team Banner" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop'"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/20 to-transparent"></div>
+                    
+                    <div class="absolute bottom-4 left-6 flex items-end gap-4">
+                        <div class="w-16 h-16 rounded-full bg-surface-container-lowest flex items-center justify-center border-2 border-white/10 shadow-xl overflow-hidden p-2">
+                            <img id="modal-badge" class="w-full h-full object-contain" src="" alt="Badge"/>
+                        </div>
+                        <div class="mb-1">
+                            <h3 id="modal-team-name" class="font-headline-lg text-[28px] leading-none text-white font-extrabold uppercase">Portugal</h3>
+                            <p id="modal-formed-year" class="font-label-caps text-on-surface-variant text-[10px] mt-1"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Info Cards Grid -->
+                <div class="px-6 py-4 grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between">
+                        <span class="font-label-caps text-[9px] text-on-surface-variant block mb-1">STADIUM HOME</span>
+                        <h4 id="modal-stadium" class="font-bold text-[14px] text-on-surface truncate">-</h4>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between">
+                        <span class="font-label-caps text-[9px] text-on-surface-variant block mb-1">NATIONALITY & REGION</span>
+                        <h4 id="modal-nation" class="font-bold text-[14px] text-on-surface truncate">-</h4>
+                    </div>
+                </div>
+
+                <!-- Squad List Section -->
+                <div class="px-6 py-4">
+                    <h4 class="font-headline-md text-[18px] text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">groups</span>
+                        Roster & Staff
+                    </h4>
+                    <div id="modal-squad-grid" class="grid grid-cols-2 gap-3">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar (Shared Component) -->
+    <nav class="fixed bottom-0 left-0 w-full md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:max-w-md md:rounded-2xl z-40 flex justify-around items-center px-4 py-3 bg-surface-container-low/80 backdrop-blur-lg border-t md:border border-white/10 rounded-t-xl shadow-lg">
+        <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-2 px-4 active:scale-90 transition-transform" href="index.html">
+            <span class="material-symbols-outlined" data-icon="leaderboard" data-weight="fill" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Standings</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="news.html">
+            <span class="material-symbols-outlined" data-icon="news">news</span>
+            <span class="font-label-caps text-label-caps mt-0.5">News</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="recaps.html">
+            <span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Recaps</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="predict.html">
+            <span class="material-symbols-outlined" data-icon="insights">insights</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Predict</span>
+        </a>
+    </nav>
+
+    <!-- App Data & Logic Script -->
+    <script>
+        // Data mapping for national teams
+        const teamDatabase = {
+            "Netherlands": { id: "133905", badge: "https://r2.thesportsdb.com/images/media/team/badge/swqvpy1455466083.png/tiny" },
+            "Senegal": { id: "136143", badge: "https://www.thesportsdb.com/images/media/team/badge/slayb01780546342.png/tiny" },
+            "Ecuador": { id: "134507", badge: "https://r2.thesportsdb.com/images/media/team/badge/47wv2y1591989301.png/tiny" },
+            "Qatar": { id: "136472", badge: "https://r2.thesportsdb.com/images/media/team/badge/rs3ir31642708685.png/tiny" },
+            "England": { id: "133914", badge: "https://r2.thesportsdb.com/images/media/team/badge/vf5ttc1726166739.png/tiny" },
+            "USA": { id: "134514", badge: "https://r2.thesportsdb.com/images/media/team/badge/21f0oi1597948195.png/tiny" },
+            "Iran": { id: "134511", badge: "https://r2.thesportsdb.com/images/media/team/badge/uttpvw1455465617.png/tiny" },
+            "Wales": { id: "135982", badge: "https://r2.thesportsdb.com/images/media/team/badge/pdayn21591983222.png/tiny" },
+            "Argentina": { id: "134509", badge: "https://r2.thesportsdb.com/images/media/team/badge/3zplhu1726167477.png/tiny" },
+            "Poland": { id: "133901", badge: "https://r2.thesportsdb.com/images/media/team/badge/ttvrxy1455466076.png/tiny" },
+            "Mexico": { id: "134497", badge: "https://r2.thesportsdb.com/images/media/team/badge/3rmosi1748525208.png/tiny" },
+            "Saudi Arabia": { id: "136137", badge: "https://r2.thesportsdb.com/images/media/team/badge/24xwpq1594125742.png/tiny" },
+            "France": { id: "133913", badge: "https://r2.thesportsdb.com/images/media/team/badge/p3n0z51726166851.png/tiny" },
+            "Australia": { id: "134500", badge: "https://r2.thesportsdb.com/images/media/team/badge/lark6k1661780848.png/tiny" },
+            "Tunisia": { id: "136142", badge: "https://r2.thesportsdb.com/images/media/team/badge/7r89rg1526727277.png/tiny" },
+            "Denmark": { id: "133906", badge: "https://r2.thesportsdb.com/images/media/team/badge/e13arj1717365623.png/tiny" },
+            "Japan": { id: "134503", badge: "https://r2.thesportsdb.com/images/media/team/badge/ffsyxz1591989843.png/tiny" },
+            "Spain": { id: "133909", badge: "https://r2.thesportsdb.com/images/media/team/badge/ncgqyr1726166942.png/tiny" },
+            "Germany": { id: "133907", badge: "https://r2.thesportsdb.com/images/media/team/badge/1xysi51726167152.png/tiny" },
+            "Costa Rica": { id: "134505", badge: "https://r2.thesportsdb.com/images/media/team/badge/bss90a1637840151.png/tiny" },
+            "Morocco": { id: "136139", badge: "https://r2.thesportsdb.com/images/media/team/badge/hbmwkj1731791275.png/tiny" },
+            "Croatia": { id: "133912", badge: "https://r2.thesportsdb.com/images/media/team/badge/vvtsyu1455465317.png/tiny" },
+            "Belgium": { id: "134515", badge: "https://r2.thesportsdb.com/images/media/team/badge/8xlvxv1592062265.png/tiny" },
+            "Canada": { id: "140073", badge: "https://r2.thesportsdb.com/images/media/team/badge/2t631f1595154867.png/tiny" },
+            "Brazil": { id: "134496", badge: "https://r2.thesportsdb.com/images/media/team/badge/jl6dip1726167280.png/tiny" },
+            "Switzerland": { id: "134506", badge: "https://r2.thesportsdb.com/images/media/team/badge/mb7yqe1717365808.png/tiny" },
+            "Cameroon": { id: "134498", badge: "https://r2.thesportsdb.com/images/media/team/badge/txqspw1455463989.png/tiny" },
+            "Serbia": { id: "133918", badge: "https://r2.thesportsdb.com/images/media/team/badge/1xysi51726167152.png/tiny" },
+            "Portugal": { id: "133908", badge: "https://r2.thesportsdb.com/images/media/team/badge/swqvpy1455466083.png/tiny" },
+            "Ghana": { id: "134513", badge: "https://r2.thesportsdb.com/images/media/team/badge/7r89rg1526727277.png/tiny" },
+            "Uruguay": { id: "134504", badge: "https://r2.thesportsdb.com/images/media/team/badge/bss90a1637840151.png/tiny" },
+            "South Korea": { id: "134517", badge: "https://r2.thesportsdb.com/images/media/team/badge/ffsyxz1591989843.png/tiny" }
+        };
+
+        const historicalStandings = {
+            "2026": {
+                "A": [
+                    { name: "USA", w: 0, gd: 0, pts: 0 },
+                    { name: "Mexico", w: 0, gd: 0, pts: 0 },
+                    { name: "Canada", w: 0, gd: 0, pts: 0 },
+                    { name: "Ecuador", w: 0, gd: 0, pts: 0 }
+                ],
+                "B": [
+                    { name: "England", w: 0, gd: 0, pts: 0 },
+                    { name: "Japan", w: 0, gd: 0, pts: 0 },
+                    { name: "Senegal", w: 0, gd: 0, pts: 0 },
+                    { name: "Wales", w: 0, gd: 0, pts: 0 }
+                ],
+                "C": [
+                    { name: "Argentina", w: 0, gd: 0, pts: 0 },
+                    { name: "Poland", w: 0, gd: 0, pts: 0 },
+                    { name: "Saudi Arabia", w: 0, gd: 0, pts: 0 },
+                    { name: "Qatar", w: 0, gd: 0, pts: 0 }
+                ],
+                "D": [
+                    { name: "France", w: 0, gd: 0, pts: 0 },
+                    { name: "Australia", w: 0, gd: 0, pts: 0 },
+                    { name: "Tunisia", w: 0, gd: 0, pts: 0 },
+                    { name: "Denmark", w: 0, gd: 0, pts: 0 }
+                ],
+                "E": [
+                    { name: "Spain", w: 0, gd: 0, pts: 0 },
+                    { name: "Germany", w: 0, gd: 0, pts: 0 },
+                    { name: "Costa Rica", w: 0, gd: 0, pts: 0 },
+                    { name: "Iran", w: 0, gd: 0, pts: 0 }
+                ],
+                "F": [
+                    { name: "Morocco", w: 0, gd: 0, pts: 0 },
+                    { name: "Croatia", w: 0, gd: 0, pts: 0 },
+                    { name: "Belgium", w: 0, gd: 0, pts: 0 },
+                    { name: "Serbia", w: 0, gd: 0, pts: 0 }
+                ],
+                "G": [
+                    { name: "Brazil", w: 0, gd: 0, pts: 0 },
+                    { name: "Switzerland", w: 0, gd: 0, pts: 0 },
+                    { name: "Cameroon", w: 0, gd: 0, pts: 0 },
+                    { name: "Ghana", w: 0, gd: 0, pts: 0 }
+                ],
+                "H": [
+                    { name: "Portugal", w: 0, gd: 0, pts: 0 },
+                    { name: "South Korea", w: 0, gd: 0, pts: 0 },
+                    { name: "Uruguay", w: 0, gd: 0, pts: 0 },
+                    { name: "Netherlands", w: 0, gd: 0, pts: 0 }
+                ]
+            },
+            "2022": {
+                "A": [
+                    { name: "Netherlands", w: 2, gd: 4, pts: 7 },
+                    { name: "Senegal", w: 2, gd: 1, pts: 6 },
+                    { name: "Ecuador", w: 1, gd: 1, pts: 4 },
+                    { name: "Qatar", w: 0, gd: -6, pts: 0 }
+                ],
+                "B": [
+                    { name: "England", w: 2, gd: 7, pts: 7 },
+                    { name: "USA", w: 1, gd: 1, pts: 5 },
+                    { name: "Iran", w: 1, gd: -3, pts: 3 },
+                    { name: "Wales", w: 0, gd: -5, pts: 1 }
+                ],
+                "C": [
+                    { name: "Argentina", w: 2, gd: 3, pts: 6 },
+                    { name: "Poland", w: 1, gd: 0, pts: 4 },
+                    { name: "Mexico", w: 1, gd: -1, pts: 4 },
+                    { name: "Saudi Arabia", w: 1, gd: -2, pts: 3 }
+                ],
+                "D": [
+                    { name: "France", w: 2, gd: 3, pts: 6 },
+                    { name: "Australia", w: 2, gd: -1, pts: 6 },
+                    { name: "Tunisia", w: 1, gd: 0, pts: 4 },
+                    { name: "Denmark", w: 0, gd: -2, pts: 1 }
+                ],
+                "E": [
+                    { name: "Japan", w: 2, gd: 1, pts: 6 },
+                    { name: "Spain", w: 1, gd: 6, pts: 4 },
+                    { name: "Germany", w: 1, gd: 1, pts: 4 },
+                    { name: "Costa Rica", w: 1, gd: -8, pts: 3 }
+                ],
+                "F": [
+                    { name: "Morocco", w: 2, gd: 3, pts: 7 },
+                    { name: "Croatia", w: 1, gd: 3, pts: 5 },
+                    { name: "Belgium", w: 1, gd: -1, pts: 4 },
+                    { name: "Canada", w: 0, gd: -5, pts: 0 }
+                ],
+                "G": [
+                    { name: "Brazil", w: 2, gd: 2, pts: 6 },
+                    { name: "Switzerland", w: 2, gd: 1, pts: 6 },
+                    { name: "Cameroon", w: 1, gd: 0, pts: 4 },
+                    { name: "Serbia", w: 0, gd: -3, pts: 1 }
+                ],
+                "H": [
+                    // Dynamic values loaded from API will replace this
+                    { name: "Portugal", w: 2, gd: 2, pts: 6 },
+                    { name: "South Korea", w: 1, gd: 0, pts: 4 },
+                    { name: "Uruguay", w: 1, gd: 0, pts: 4 },
+                    { name: "Ghana", w: 1, gd: -2, pts: 3 }
+                ]
+            },
+            "2018": {
+                "A": [
+                    { name: "Uruguay", w: 3, gd: 5, pts: 9 },
+                    { name: "Russia", w: 2, gd: 4, pts: 6 },
+                    { name: "Saudi Arabia", w: 1, gd: -5, pts: 3 },
+                    { name: "Egypt", w: 0, gd: -4, pts: 0 }
+                ],
+                "B": [
+                    { name: "Spain", w: 1, gd: 1, pts: 5 },
+                    { name: "Portugal", w: 1, gd: 1, pts: 5 },
+                    { name: "Iran", w: 1, gd: 0, pts: 4 },
+                    { name: "Morocco", w: 0, gd: -2, pts: 1 }
+                ]
+            },
+            "2014": {
+                "A": [
+                    { name: "Brazil", w: 2, gd: 5, pts: 7 },
+                    { name: "Mexico", w: 2, gd: 3, pts: 7 },
+                    { name: "Croatia", w: 1, gd: 0, pts: 3 },
+                    { name: "Cameroon", w: 0, gd: -8, pts: 0 }
+                ]
+            }
+        };
+
+        const spotlightMatchesData = {
+            "2026": [
+                { matchday: "Matchday 1", date: "June 12, 2026", team1: "USA", team2: "Ecuador", venue: "SoFi Stadium, LA" },
+                { matchday: "Matchday 1", date: "June 13, 2026", team1: "Mexico", team2: "Canada", venue: "Estadio Azteca, CDMX" }
+            ],
+            "2022": [
+                { matchday: "Final", date: "Dec 18, 2022", team1: "Argentina", team2: "France", score1: "3 (4)", score2: "3 (2)", venue: "Lusail Stadium" },
+                { matchday: "Semi-Final", date: "Dec 14, 2022", team1: "France", team2: "Morocco", score1: "2", score2: "0", venue: "Al Bayt Stadium" }
+            ],
+            "2018": [
+                { matchday: "Final", date: "July 15, 2018", team1: "France", team2: "Croatia", score1: "4", score2: "2", venue: "Luzhniki Stadium" }
+            ],
+            "2014": [
+                { matchday: "Final", date: "July 13, 2014", team1: "Germany", team2: "Argentina", score1: "1", score2: "0", venue: "Maracanã Stadium" }
+            ]
+        };
+
+        let currentSeason = "2026";
+        let currentGroup = "A";
+        let apiLoadedGroupH = null;
+        let apiLoadedMatches = [];
+
+        // Fetch standings from API for 2022 Group H
+        async function fetchGroupHFromAPI() {
+            try {
+                const response = await fetch("https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=4429&s=2022");
+                const data = await response.json();
+                if (data && data.table) {
+                    apiLoadedGroupH = data.table.map(team => ({
+                        name: team.strTeam,
+                        w: parseInt(team.intWin),
+                        gd: parseInt(team.intGoalDifference),
+                        pts: parseInt(team.intPoints),
+                        isLive: true
+                    }));
+                    // Update table if currently viewing 2022 Group H
+                    if (currentSeason === "2022" && currentGroup === "H") {
+                        renderTable();
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching Group H standings:", error);
+            }
+        }
+
+        // Fetch matches and scores dynamically from the API
+        async function fetchMatchesFromAPI() {
+            try {
+                const url = `https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4429&s=${currentSeason}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data && data.events) {
+                    apiLoadedMatches = data.events;
+                } else {
+                    apiLoadedMatches = [];
+                }
+            } catch (error) {
+                console.error("Error fetching matches from API:", error);
+                apiLoadedMatches = [];
+            }
+            renderSpotlightMatches();
+        }
+
+        // Initialize group tabs
+        function initializeGroupTabs() {
+            const tabsContainer = document.getElementById("group-tabs");
+            tabsContainer.innerHTML = "";
+            const groupsAvailable = Object.keys(historicalStandings[currentSeason] || {});
+            
+            groupsAvailable.forEach((group, index) => {
+                const btn = document.createElement("button");
+                btn.className = `flex-shrink-0 px-6 py-3 rounded-xl font-bold transition-all active:scale-95 ${group === currentGroup ? 'active-tab' : 'glass-panel text-on-surface-variant border border-white/10'}`;
+                btn.textContent = `Group ${group}`;
+                btn.onclick = () => {
+                    currentGroup = group;
+                    document.querySelectorAll("#group-tabs button").forEach(b => {
+                        b.className = "flex-shrink-0 px-6 py-3 rounded-xl font-bold transition-all active:scale-95 glass-panel text-on-surface-variant border border-white/10";
+                    });
+                    btn.className = "flex-shrink-0 px-6 py-3 rounded-xl font-bold transition-all active:scale-95 active-tab";
+                    renderTable();
+                };
+                tabsContainer.appendChild(btn);
+            });
+            
+            // Adjust currentGroup if not available in currentSeason
+            if (!groupsAvailable.includes(currentGroup) && groupsAvailable.length > 0) {
+                currentGroup = groupsAvailable[0];
+                tabsContainer.firstChild.className = "flex-shrink-0 px-6 py-3 rounded-xl font-bold transition-all active:scale-95 active-tab";
+            }
+        }
+
+        // Render standings table
+        function renderTable() {
+            const tbody = document.getElementById("standings-tbody");
+            const badge = document.getElementById("data-source-badge");
+            tbody.innerHTML = "";
+
+            let standings = [];
+            if (currentSeason === "2022" && currentGroup === "H" && apiLoadedGroupH) {
+                standings = apiLoadedGroupH;
+                badge.className = "flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/20 text-primary-container font-label-caps text-[10px]";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> LIVE API`;
+            } else {
+                standings = (historicalStandings[currentSeason] && historicalStandings[currentSeason][currentGroup]) || [];
+                badge.className = "flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-on-surface-variant font-label-caps text-[10px]";
+                badge.innerHTML = `HISTORICAL RECORDS`;
+            }
+
+            if (standings.length === 0) {
+                tbody.innerHTML = `<div class="p-8 text-center text-on-surface-variant font-label-caps text-[12px]">No data available for this bracket</div>`;
+                return;
+            }
+
+            standings.forEach((team, index) => {
+                const rank = String(index + 1).padStart(2, '0');
+                const isQualified = index < 2;
+                const dbInfo = teamDatabase[team.name] || {};
+                const badgeUrl = dbInfo.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                
+                const row = document.createElement("div");
+                row.className = `grid grid-cols-[2.5rem_1fr_2.5rem_2.5rem_2.5rem] items-center px-4 py-5 hover:bg-white/5 transition-colors cursor-pointer ${isQualified ? '' : 'bg-error-container/5'}`;
+                row.onclick = () => openTeamDetails(team.name);
+                
+                row.innerHTML = `
+                    <span class="font-stats-numeric ${isQualified ? 'text-primary' : 'text-on-surface-variant'}">${rank}</span>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center overflow-hidden border border-white/20">
+                            <img alt="${team.name} Flag" class="w-full h-full object-cover" src="${badgeUrl}"/>
+                        </div>
+                        <span class="font-bold text-on-surface">${team.name}</span>
+                    </div>
+                    <span class="text-center font-stats-numeric">${team.w}</span>
+                    <span class="text-center font-stats-numeric">${team.gd >= 0 ? '+' + team.gd : team.gd}</span>
+                    <span class="text-right font-stats-numeric ${isQualified ? 'text-primary-container' : ''}">${team.pts}</span>
+                `;
+                tbody.appendChild(row);
+            });
+
+            renderSpotlightMatches();
+        }
+
+        const pendingTeamRequests = {};
+        async function ensureTeamInDatabase(teamName) {
+            if (teamDatabase[teamName]) return teamDatabase[teamName];
+            if (pendingTeamRequests[teamName]) return pendingTeamRequests[teamName];
+
+            pendingTeamRequests[teamName] = (async () => {
+                try {
+                    const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(teamName)}`);
+                    const data = await response.json();
+                    if (data && data.teams && data.teams.length > 0) {
+                        const team = data.teams[0];
+                        const info = {
+                            id: team.idTeam,
+                            badge: team.strBadge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop"
+                        };
+                        teamDatabase[teamName] = info;
+                        return info;
+                    }
+                } catch (error) {
+                    console.error("Error searching team:", teamName, error);
+                }
+                return null;
+            })();
+
+            const res = await pendingTeamRequests[teamName];
+            delete pendingTeamRequests[teamName];
+            return res;
+        }
+
+        // Render spotlight matches
+        function renderSpotlightMatches() {
+            const container = document.getElementById("spotlight-matches");
+            container.innerHTML = "";
+
+            let matches = [];
+            if (apiLoadedMatches && apiLoadedMatches.length > 0) {
+                matches = apiLoadedMatches.slice(0, 6).map(e => ({
+                    matchday: `Round ${e.intRound}`,
+                    date: e.dateEvent,
+                    team1: e.strHomeTeam,
+                    team2: e.strAwayTeam,
+                    score1: e.intHomeScore,
+                    score2: e.intAwayScore,
+                    venue: e.strVenue,
+                    badge1: e.strHomeTeamBadge,
+                    badge2: e.strAwayTeamBadge
+                }));
+            } else {
+                matches = spotlightMatchesData[currentSeason] || [];
+            }
+
+            if (matches.length === 0) {
+                container.innerHTML = `<p class="text-on-surface-variant text-[13px] italic">No spotlight matches recorded.</p>`;
+                return;
+            }
+
+            matches.forEach((match, idx) => {
+                const card = document.createElement("div");
+                card.className = "glass-panel rounded-2xl p-5 border border-white/10 relative overflow-hidden group";
+                
+                const dbInfo1 = teamDatabase[match.team1] || {};
+                const dbInfo2 = teamDatabase[match.team2] || {};
+                
+                const flag1 = match.badge1 || dbInfo1.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                const flag2 = match.badge2 || dbInfo2.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                
+                const scoreText = (match.score1 !== null && match.score1 !== undefined) 
+                    ? `${match.score1} - ${match.score2}` 
+                    : 'VS';
+                
+                const homeImgId = `spotlight-home-${idx}`;
+                const awayImgId = `spotlight-away-${idx}`;
+
+                card.innerHTML = `
+                    <div class="absolute inset-0 stadium-glow opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-[10px] font-label-caps text-primary border border-primary/30 px-2 py-0.5 rounded-full">${match.matchday.toUpperCase()}</span>
+                            <span class="text-[10px] font-label-caps text-on-surface-variant">${match.date.toUpperCase()}</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="openTeamDetails('${match.team1}')">
+                                <img id="${homeImgId}" alt="${match.team1}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag1}"/>
+                                <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team1}</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="font-stats-numeric text-[22px] text-white">
+                                    ${scoreText}
+                                </div>
+                                <div class="px-2 py-0.5 rounded bg-white/10 text-[9px] font-label-caps text-on-surface-variant text-center max-w-[120px] truncate">${match.venue}</div>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="openTeamDetails('${match.team2}')">
+                                <img id="${awayImgId}" alt="${match.team2}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag2}"/>
+                                <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team2}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                // Dynamically fetch and update the badge from API if not already in local database
+                if (!match.badge1 && !dbInfo1.badge) {
+                    ensureTeamInDatabase(match.team1).then(info => {
+                        if (info && info.badge) {
+                            const img = document.getElementById(homeImgId);
+                            if (img) img.src = info.badge;
+                        }
+                    });
+                }
+                if (!match.badge2 && !dbInfo2.badge) {
+                    ensureTeamInDatabase(match.team2).then(info => {
+                        if (info && info.badge) {
+                            const img = document.getElementById(awayImgId);
+                            if (img) img.src = info.badge;
+                        }
+                    });
+                }
+            });
+        }
+
+        // Open Team Details dynamically from API
+        async function openTeamDetails(teamName) {
+            let dbInfo = teamDatabase[teamName];
+            let teamId = dbInfo ? dbInfo.id : null;
+
+            const modal = document.getElementById("team-modal");
+            const container = document.getElementById("modal-container");
+            const loader = document.getElementById("modal-loader");
+
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                container.classList.remove("translate-y-full");
+            }, 50);
+
+            loader.classList.remove("hidden");
+
+            try {
+                if (!teamId) {
+                    const searchRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(teamName)}`);
+                    const searchData = await searchRes.json();
+                    if (searchData && searchData.teams && searchData.teams[0]) {
+                        teamId = searchData.teams[0].idTeam;
+                    }
+                }
+
+                if (!teamId) {
+                    const squadContainer = document.getElementById("modal-squad-grid");
+                    squadContainer.innerHTML = `<p class="col-span-2 text-center text-on-surface-variant font-label-caps py-6">Team details not found in API</p>`;
+                    document.getElementById("modal-team-name").textContent = teamName;
+                    document.getElementById("modal-formed-year").textContent = "";
+                    document.getElementById("modal-badge").src = "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                    document.getElementById("modal-banner").src = "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop";
+                    document.getElementById("modal-stadium").textContent = "-";
+                    document.getElementById("modal-nation").textContent = "-";
+                    return;
+                }
+
+                // Fetch team details
+                const teamRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/lookupteam.php?id=${teamId}`);
+                const teamData = await teamRes.json();
+                const team = teamData.teams ? teamData.teams[0] : null;
+
+                // Fetch squad details
+                const squadRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/lookup_all_players.php?id=${teamId}`);
+                const squadData = await squadRes.json();
+                const players = squadData.player || [];
+
+                if (team) {
+                    document.getElementById("modal-team-name").textContent = team.strTeam;
+                    document.getElementById("modal-formed-year").textContent = `ESTABLISHED ${team.intFormedYear}`;
+                    document.getElementById("modal-badge").src = team.strBadge;
+                    document.getElementById("modal-banner").src = team.strTeamBanner || team.strStadiumThumb || "";
+                    document.getElementById("modal-stadium").textContent = team.strStadium || "Not Listed";
+                    document.getElementById("modal-nation").textContent = team.strLocation || team.strCountry;
+
+                    const squadContainer = document.getElementById("modal-squad-grid");
+                    squadContainer.innerHTML = "";
+
+                    if (players.length === 0) {
+                        squadContainer.innerHTML = `<p class="col-span-2 text-center text-on-surface-variant font-label-caps py-6">Roster is empty or unavailable</p>`;
+                    } else {
+                        players.slice(0, 14).forEach(player => {
+                            const card = document.createElement("div");
+                            card.className = "flex items-center gap-3 bg-white/5 rounded-xl p-3 border border-white/5 hover:border-primary/20 transition-all";
+                            
+                            const playerAvatar = player.strCutout || player.strThumb || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&auto=format&fit=crop";
+                            
+                            card.innerHTML = `
+                                <div class="w-10 h-10 rounded-full overflow-hidden bg-white/10 flex-shrink-0">
+                                    <img class="w-full h-full object-cover" src="${playerAvatar}" alt="${player.strPlayer}"/>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="font-bold text-[13px] text-white truncate">${player.strPlayer}</h5>
+                                    <p class="text-[10px] text-on-surface-variant truncate">${player.strPosition || "Squad"}</p>
+                                </div>
+                                ${player.strNumber ? `<span class="font-stats-numeric text-primary text-[14px]">#${player.strNumber}</span>` : ''}
+                            `;
+                            squadContainer.appendChild(card);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading team details:", error);
+            } finally {
+                loader.classList.add("hidden");
+            }
+        }
+
+        function closeTeamModal() {
+            const modal = document.getElementById("team-modal");
+            const container = document.getElementById("modal-container");
+            container.classList.add("translate-y-full");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+            }, 300);
+        }
+
+        // Season Selector Listener
+        document.getElementById("season-selector").addEventListener("change", async (e) => {
+            currentSeason = e.target.value;
+            initializeGroupTabs();
+            renderTable();
+            await fetchMatchesFromAPI();
+        });
+
+        // Initialize Page
+        initializeGroupTabs();
+        renderTable();
+        fetchGroupHFromAPI();
+        fetchMatchesFromAPI();
+    </script>
+</body>
+</html>

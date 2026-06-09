@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>Unity Arena 2026 | Recaps &amp; Highlights</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&amp;family=Sora:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        @layer base {
+            body {
+                @apply bg-background text-on-background overflow-hidden;
+                overscroll-behavior-y: contain;
+            }
+        }
+        .snap-container {
+            scroll-snap-type: y mandatory;
+            height: 100vh;
+            overflow-y: scroll;
+            scrollbar-width: none;
+        }
+        .snap-container::-webkit-scrollbar {
+            display: none;
+        }
+        .video-section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            height: 100vh;
+            position: relative;
+        }
+        .glass-overlay {
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.1) 60%, rgba(0, 0, 0, 0.5) 100%);
+        }
+        .stat-glow {
+            filter: drop-shadow(0 0 8px rgba(229, 184, 66, 0.4));
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#000000",
+                        "on-surface": "#f3eedd",
+                        "primary-container": "#dfb33a",
+                        "inverse-primary": "#bda03c",
+                        "background": "#000000",
+                        "on-primary-container": "#000000",
+                        "on-primary-fixed": "#000000",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#ffffff",
+                        "on-secondary-fixed": "#ffffff",
+                        "surface-dim": "#0d0d0d",
+                        "primary-fixed": "#ffd700",
+                        "tertiary-container": "#e5e5e5",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#050505",
+                        "tertiary-fixed-dim": "#cccccc",
+                        "surface-tint": "#ffd700",
+                        "on-surface-variant": "#a8a295",
+                        "secondary-fixed-dim": "#ff3b30",
+                        "secondary-container": "#d82a2a",
+                        "surface-container-highest": "#2a2a2a",
+                        "on-tertiary-container": "#d82a2a",
+                        "on-background": "#ffffff",
+                        "secondary-fixed": "#ff3b30",
+                        "primary": "#e5b842",
+                        "surface-container-low": "#0f0f0f",
+                        "on-primary": "#000000",
+                        "inverse-on-surface": "#1e1e1e",
+                        "surface-container-high": "#1c1c1c",
+                        "on-secondary-fixed-variant": "#ffffff",
+                        "inverse-surface": "#ffffff",
+                        "surface": "#0d0d0d",
+                        "tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffffff",
+                        "on-primary-fixed-variant": "#000000",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#ffd700",
+                        "on-tertiary-fixed-variant": "#ffffff",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#ffffff",
+                        "secondary": "#d82a2a",
+                        "outline": "#333333",
+                        "surface-container": "#141414",
+                        "surface-variant": "#222222",
+                        "surface-bright": "#1f1f1f",
+                        "outline-variant": "#444444",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "md": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "lg": "48px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Work Sans"],
+                        "stats-numeric": ["Work Sans"],
+                        "display-sm": ["Sora"],
+                        "label-caps": ["Work Sans"],
+                        "body-lg": ["Work Sans"],
+                        "headline-lg-mobile": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "display-lg": ["Sora"],
+                        "headline-md": ["Sora"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "stats-numeric": ["20px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "display-sm": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-body-md bg-background text-on-background min-h-screen overflow-hidden">
+    <!-- Top Header Overlay -->
+    <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-gutter py-6 bg-gradient-to-b from-background/80 to-transparent backdrop-blur-sm pointer-events-none">
+        <div class="pointer-events-auto">
+            <h1 class="font-headline-md text-headline-md text-primary uppercase tracking-tighter cursor-pointer" onclick="location.reload()">Recaps</h1>
+        </div>
+        <div class="flex gap-4 pointer-events-auto items-center">
+            <!-- Season selector inside Recaps! -->
+            <select id="season-selector-recaps" class="bg-surface-container/50 border border-white/10 rounded-xl text-on-surface font-label-caps text-[10px] px-3 py-1.5 outline-none backdrop-blur-md cursor-pointer">
+                <option value="2022" selected>2022 Highlights</option>
+                <option value="2018">2018 Highlights</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- Main Vertical Feed -->
+    <main class="snap-container h-screen w-full" id="feed-container">
+        <!-- Initial loading state -->
+        <div id="recaps-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-background z-40 gap-3">
+            <div class="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+            <p class="font-label-caps text-[11px] text-primary tracking-widest">LOADING WORLD CUP MOMENTS...</p>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation Bar (Shared Component) -->
+    <nav class="fixed bottom-0 left-0 w-full md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:max-w-md md:rounded-2xl z-40 flex justify-around items-center px-4 py-3 bg-surface-container-low/80 backdrop-blur-lg border-t md:border border-white/10 rounded-t-xl shadow-lg">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="index.html">
+            <span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Standings</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="news.html">
+            <span class="material-symbols-outlined" data-icon="news">news</span>
+            <span class="font-label-caps text-label-caps mt-0.5">News</span>
+        </a>
+        <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-2 px-4 active:scale-90 transition-transform" href="recaps.html">
+            <span class="material-symbols-outlined" data-icon="play_circle" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Recaps</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="predict.html">
+            <span class="material-symbols-outlined" data-icon="insights">insights</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Predict</span>
+        </a>
+    </nav>
+
+    <!-- App Logic -->
+    <script>
+        const teamDatabase = {
+            "Qatar": "136472", "Ecuador": "134507", "Senegal": "136143", "Netherlands": "133905",
+            "England": "133914", "Iran": "134511", "USA": "134514", "Wales": "135982",
+            "Argentina": "134509", "Saudi Arabia": "136137", "Mexico": "134497", "Poland": "133901",
+            "France": "133913", "Australia": "134500", "Tunisia": "136142", "Denmark": "133906",
+            "Japan": "134503", "Spain": "133909", "Germany": "133907", "Costa Rica": "134505",
+            "Morocco": "136139", "Croatia": "133912", "Belgium": "134515", "Canada": "140073",
+            "Brazil": "134496", "Serbia": "133918", "Switzerland": "134506", "Cameroon": "134498",
+            "Portugal": "133908", "Ghana": "134513", "Uruguay": "134504", "South Korea": "134517"
+        };
+
+        const fallbackRecaps = {
+            "2022": [
+                {
+                    strEvent: "Argentina vs France",
+                    strSeason: "2022",
+                    strHomeTeam: "Argentina",
+                    strAwayTeam: "France",
+                    intHomeScore: "3",
+                    intAwayScore: "3",
+                    strVenue: "Lusail Stadium",
+                    strThumb: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop",
+                    strVideo: "https://www.youtube.com/watch?v=mYg3yaB6IYM",
+                    description: "An legendary final clash where Messi lifts the ultimate trophy after a penalty shootout thriller."
+                },
+                {
+                    strEvent: "Croatia vs Brazil",
+                    strSeason: "2022",
+                    strHomeTeam: "Croatia",
+                    strAwayTeam: "Brazil",
+                    intHomeScore: "1",
+                    intAwayScore: "1",
+                    strVenue: "Education City Stadium",
+                    strThumb: "https://images.unsplash.com/photo-1518063319789-7217e6706b04?q=80&w=1200&auto=format&fit=crop",
+                    strVideo: "https://www.youtube.com/watch?v=3Toik58vJp4",
+                    description: "Croatia stuns Brazil on penalties to advance to the semi-finals."
+                }
+            ],
+            "2018": [
+                {
+                    strEvent: "France vs Croatia",
+                    strSeason: "2018",
+                    strHomeTeam: "France",
+                    strAwayTeam: "Croatia",
+                    intHomeScore: "4",
+                    intAwayScore: "2",
+                    strVenue: "Luzhniki Stadium",
+                    strThumb: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200&auto=format&fit=crop",
+                    strVideo: "https://www.youtube.com/watch?v=mYg3yaB6IYM",
+                    description: "Mbappé inspires France to a spectacular 4-2 win, claiming their second star."
+                }
+            ]
+        };
+
+        let currentSeason = "2022";
+
+        async function fetchHighlights() {
+            const feed = document.getElementById("feed-container");
+            feed.innerHTML = `
+                <div id="recaps-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-background z-40 gap-3">
+                    <div class="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+                    <p class="font-label-caps text-[11px] text-primary tracking-widest">LOADING LIVE HIGHLIGHTS...</p>
+                </div>
+            `;
+
+            try {
+                const url = `https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4429&s=${currentSeason}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                let matches = [];
+                if (data && data.events && data.events.length > 0) {
+                    // Filter matches that have video highlights
+                    matches = data.events.filter(e => e.strVideo && e.strThumb);
+                }
+                
+                if (matches.length === 0) {
+                    matches = fallbackRecaps[currentSeason] || [];
+                }
+
+                renderFeed(matches);
+
+            } catch (error) {
+                console.error("Error fetching highlights:", error);
+                renderFeed(fallbackRecaps[currentSeason] || []);
+            }
+        }
+
+        function renderFeed(matches) {
+            const feed = document.getElementById("feed-container");
+            feed.innerHTML = ""; // Remove loader
+
+            if (matches.length === 0) {
+                feed.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-screen w-full bg-background p-6">
+                        <span class="material-symbols-outlined text-[64px] text-on-surface-variant mb-4">movie_filter</span>
+                        <p class="font-label-caps text-[12px] text-on-surface-variant">No match highlights recorded for this season</p>
+                    </div>
+                `;
+                return;
+            }
+
+            matches.forEach((match, index) => {
+                const section = document.createElement("section");
+                section.className = "video-section";
+
+                const thumb = match.strThumb || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop";
+                const desc = match.description || `A thrilling match in the ${match.strSeason} World Cup bracket hosted at ${match.strVenue}.`;
+                
+                // Fetch logos if available in database
+                const homeId = teamDatabase[match.strHomeTeam] || "";
+                const awayId = teamDatabase[match.strAwayTeam] || "";
+
+                section.innerHTML = `
+                    <!-- Background Image Thumbnail -->
+                    <div class="absolute inset-0 bg-surface-container-lowest">
+                        <img class="w-full h-full object-cover opacity-60" src="${thumb}" alt="${match.strEvent}"/>
+                    </div>
+                    
+                    <!-- Frosted Glass Interface Overlays -->
+                    <div class="absolute inset-0 glass-overlay flex flex-col justify-end p-gutter pb-32 z-10">
+                        <div class="flex items-end justify-between w-full">
+                            
+                            <!-- Left Section: Match & Video Metadata -->
+                            <div class="max-w-[70%] space-y-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-primary text-on-primary font-label-caps text-[9px] px-2 py-0.5 rounded-full uppercase">HIGHLIGHTS</span>
+                                    <span class="text-on-surface-variant font-label-caps text-[9px] truncate">${match.strVenue}</span>
+                                </div>
+                                <h2 class="font-headline-lg-mobile text-[24px] md:text-headline-lg text-white leading-tight font-extrabold uppercase">${match.strHomeTeam} ${match.intHomeScore} - ${match.intAwayScore} ${match.strAwayTeam}</h2>
+                                <p class="text-on-surface-variant text-sm line-clamp-2">${desc}</p>
+                                
+                                <div class="flex items-center gap-2 mt-2">
+                                    <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center border border-white/10">
+                                        <span class="material-symbols-outlined text-[14px] text-on-primary">sports_soccer</span>
+                                    </div>
+                                    <span class="font-label-caps text-[10px] text-on-surface">@FIFA_Official</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Section: User Action Controls -->
+                            <div class="flex flex-col items-center gap-6 mb-2">
+                                <div class="flex flex-col items-center">
+                                    <button class="like-btn w-12 h-12 rounded-full bg-surface-container/40 backdrop-blur-xl border border-white/10 flex items-center justify-center active:scale-90 transition-transform">
+                                        <span class="material-symbols-outlined text-white text-2xl">favorite</span>
+                                    </button>
+                                    <span class="font-label-caps text-[10px] text-on-surface mt-1">Like</span>
+                                </div>
+                                
+                                <!-- Watch Highlights Button (YouTube Video Link) -->
+                                <div class="flex flex-col items-center">
+                                    <a href="${match.strVideo}" target="_blank" class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center shadow-[0_0_20px_rgba(0,223,130,0.5)] hover:scale-105 active:scale-90 transition-all">
+                                        <span class="material-symbols-outlined text-on-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                                    </a>
+                                    <span class="font-label-caps text-[9px] text-primary mt-1 font-bold">WATCH</span>
+                                </div>
+                                
+                                <div class="flex flex-col items-center">
+                                    <button onclick="navigator.clipboard.writeText('${match.strVideo}')" class="w-12 h-12 rounded-full bg-surface-container/40 backdrop-blur-xl border border-white/10 flex items-center justify-center active:scale-90 transition-transform">
+                                        <span class="material-symbols-outlined text-on-surface text-2xl">share</span>
+                                    </button>
+                                    <span class="font-label-caps text-[10px] text-on-surface mt-1">Copy Link</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                feed.appendChild(section);
+            });
+
+            // Initialize like button listeners
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const icon = this.querySelector('span');
+                    const isLiked = icon.style.fontVariationSettings && icon.style.fontVariationSettings.includes("'FILL' 1");
+                    
+                    if (isLiked) {
+                        icon.style.fontVariationSettings = "'FILL' 0";
+                        icon.classList.remove('text-primary');
+                        icon.classList.add('text-white');
+                    } else {
+                        icon.style.fontVariationSettings = "'FILL' 1";
+                        icon.classList.remove('text-white');
+                        icon.classList.add('text-primary');
+                        
+                        // Small bounce animation
+                        this.animate([
+                            { transform: 'scale(1)' },
+                            { transform: 'scale(1.25)' },
+                            { transform: 'scale(1)' }
+                        ], { duration: 300 });
+                    }
+                });
+            });
+        }
+
+        // Season Change Listener
+        document.getElementById("season-selector-recaps").addEventListener("change", (e) => {
+            currentSeason = e.target.value;
+            fetchHighlights();
+        });
+
+        // Initialize Page
+        // Initialize Page
+        fetchHighlights();
+    </script>
+</body>
+</html>

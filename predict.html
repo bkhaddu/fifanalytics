@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Unity Arena 2026 | Predictions &amp; Analytics</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#000000",
+                    "on-surface": "#f3eedd",
+                    "primary-container": "#dfb33a",
+                    "inverse-primary": "#bda03c",
+                    "background": "#000000",
+                    "on-primary-container": "#000000",
+                    "on-primary-fixed": "#000000",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#ffffff",
+                    "on-secondary-fixed": "#ffffff",
+                    "surface-dim": "#0d0d0d",
+                    "primary-fixed": "#ffd700",
+                    "tertiary-container": "#e5e5e5",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#050505",
+                    "tertiary-fixed-dim": "#cccccc",
+                    "surface-tint": "#ffd700",
+                    "on-surface-variant": "#a8a295",
+                    "secondary-fixed-dim": "#ff3b30",
+                    "secondary-container": "#d82a2a",
+                    "surface-container-highest": "#2a2a2a",
+                    "on-tertiary-container": "#d82a2a",
+                    "on-background": "#ffffff",
+                    "secondary-fixed": "#ff3b30",
+                    "primary": "#e5b842",
+                    "surface-container-low": "#0f0f0f",
+                    "on-primary": "#000000",
+                    "inverse-on-surface": "#1e1e1e",
+                    "surface-container-high": "#1c1c1c",
+                    "on-secondary-fixed-variant": "#ffffff",
+                    "inverse-surface": "#ffffff",
+                    "surface": "#0d0d0d",
+                    "tertiary": "#ffffff",
+                    "tertiary-fixed": "#ffffff",
+                    "on-primary-fixed-variant": "#000000",
+                    "on-error": "#690005",
+                    "primary-fixed-dim": "#ffd700",
+                    "on-tertiary-fixed-variant": "#ffffff",
+                    "error-container": "#93000a",
+                    "on-secondary-container": "#ffffff",
+                    "secondary": "#d82a2a",
+                    "outline": "#333333",
+                    "surface-container": "#141414",
+                    "surface-variant": "#222222",
+                    "surface-bright": "#1f1f1f",
+                    "outline-variant": "#444444",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "base": "8px",
+                    "xl": "80px",
+                    "md": "24px",
+                    "xs": "4px",
+                    "sm": "12px",
+                    "lg": "48px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "body-md": ["Work Sans"],
+                    "stats-numeric": ["Work Sans"],
+                    "display-sm": ["Sora"],
+                    "label-caps": ["Work Sans"],
+                    "body-lg": ["Work Sans"],
+                    "headline-lg-mobile": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "display-lg": ["Sora"],
+                    "headline-md": ["Sora"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "stats-numeric": ["20px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-sm": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(18, 18, 18, 0.45);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .inner-glow {
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+        .stadium-glow {
+            background: radial-gradient(circle at center, rgba(229, 184, 66, 0.15) 0%, transparent 70%);
+        }
+        .scroll-hide::-webkit-scrollbar { display: none; }
+        .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .active-tab {
+            background: #e5b842;
+            color: #000000;
+            box-shadow: 0 0 16px rgba(229, 184, 66, 0.3);
+        }
+    </style>
+</head>
+<body class="font-body-md bg-background text-on-background min-h-screen">
+    <!-- Atmospheric Background -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-20%] w-[80%] h-[60%] rounded-full bg-primary/10 blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-20%] w-[80%] h-[60%] rounded-full bg-on-tertiary/20 blur-[120px]"></div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="pt-8 px-gutter pb-4">
+        <div class="flex justify-between items-end mb-6">
+            <div>
+                <span class="font-label-caps text-label-caps text-primary tracking-[0.2em] block mb-1">REAL-TIME FAN ZONE</span>
+                <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Predict &amp; Records</h1>
+            </div>
+            <div class="w-12 h-12 rounded-full border-2 border-primary/30 p-1 flex items-center justify-center bg-white/5">
+                <span class="material-symbols-outlined text-[24px] text-primary">emoji_events</span>
+            </div>
+        </div>
+
+        <!-- Predict vs Records Toggle -->
+        <div class="flex bg-white/5 border border-white/10 rounded-2xl p-1 w-full" id="tabs-toggle">
+            <button onclick="toggleMainTab('predict')" id="predict-tab-btn" class="flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest active-tab transition-all">
+                PREDICT MATCHES
+            </button>
+            <button onclick="toggleMainTab('records')" id="records-tab-btn" class="flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest text-on-surface-variant transition-all">
+                WORLD CUP RECORDS
+            </button>
+        </div>
+    </header>
+
+    <main class="relative z-10 px-4 pb-32 space-y-6">
+        
+        <!-- ==================== PREDICTIONS TAB ==================== -->
+        <div id="predict-section" class="space-y-6">
+            <!-- Select Match / Custom Match Selector Card -->
+            <section class="glass-card rounded-xl p-5 inner-glow relative overflow-hidden">
+                <h3 class="font-headline-md text-headline-md mb-4 text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[22px]">settings_accessibility</span>
+                    Select Matchup
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Toggle Mode -->
+                    <div class="flex bg-white/5 border border-white/10 rounded-xl p-0.5">
+                        <button onclick="changeSelectionMode('fixture')" id="mode-fixture-btn" class="flex-1 py-2 text-center rounded-lg font-bold font-label-caps text-[10px] tracking-widest bg-primary text-black transition-all">
+                            TOURNAMENT FIXTURES
+                        </button>
+                        <button onclick="changeSelectionMode('custom')" id="mode-custom-btn" class="flex-1 py-2 text-center rounded-lg font-bold font-label-caps text-[10px] tracking-widest text-on-surface-variant transition-all">
+                            CUSTOM MATCH SIMULATOR
+                        </button>
+                    </div>
+
+                    <!-- Fixtures Selectors -->
+                    <div id="fixture-selectors" class="grid grid-cols-2 gap-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">SEASON</label>
+                            <select id="predict-season-select" onchange="loadSeasonFixtures()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary cursor-pointer">
+                                <option value="2026" selected>2026 Preview</option>
+                                <option value="2022">2022 Tournament</option>
+                                <option value="2018">2018 Tournament</option>
+                                <option value="2014">2014 Tournament</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">SELECT MATCH</label>
+                            <select id="predict-match-select" onchange="selectFixture()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary max-w-full truncate cursor-pointer">
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Custom Selectors -->
+                    <div id="custom-selectors" class="grid grid-cols-2 gap-3 hidden">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">HOME TEAM</label>
+                            <select id="custom-home-select" onchange="runCustomSimulation()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary cursor-pointer">
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">AWAY TEAM</label>
+                            <select id="custom-away-select" onchange="runCustomSimulation()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary cursor-pointer">
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hero Match Prediction Card -->
+            <section class="glass-card rounded-xl overflow-hidden relative inner-glow">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="flex items-center space-x-1 bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-[10px] font-bold animate-pulse">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                        <span id="match-status-badge">LIVE POLLING</span>
+                    </span>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="text-center flex-1">
+                            <img id="team1-badge" alt="USA" class="w-16 h-16 mx-auto mb-2 drop-shadow-2xl object-cover bg-white/5 p-1 rounded-full" src="https://r2.thesportsdb.com/images/media/team/badge/21f0oi1597948195.png/tiny"/>
+                            <p id="team1-name" class="font-headline-md text-[16px] md:text-headline-md text-on-surface font-extrabold uppercase">USA</p>
+                        </div>
+                        <div class="px-4 text-center">
+                            <span class="font-stats-numeric text-stats-numeric text-primary/50 text-xs italic block mb-1">VS</span>
+                            <span id="match-score-or-time" class="font-display-sm text-[26px] md:text-[32px] text-white tracking-widest font-extrabold">20:00</span>
+                        </div>
+                        <div class="text-center flex-1">
+                            <img id="team2-badge" alt="MEX" class="w-16 h-16 mx-auto mb-2 drop-shadow-2xl object-cover bg-white/5 p-1 rounded-full" src="https://r2.thesportsdb.com/images/media/team/badge/3rmosi1748525208.png/tiny"/>
+                            <p id="team2-name" class="font-headline-md text-[16px] md:text-headline-md text-on-surface font-extrabold uppercase">MEX</p>
+                        </div>
+                    </div>
+
+                    <!-- Probability Gauge -->
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant">
+                            <span>WIN PROBABILITY</span>
+                            <span class="text-primary font-bold">AI ANALYZED</span>
+                        </div>
+                        <div class="h-4 w-full bg-surface-container-highest rounded-full flex overflow-hidden p-0.5 border border-white/5" id="probability-bar-container">
+                            <div id="prob-team1-bar" class="h-full bg-gradient-to-r from-primary to-primary-container rounded-l-full" style="width: 58%"></div>
+                            <div id="prob-draw-bar" class="h-full bg-white/20" style="width: 10%"></div>
+                            <div id="prob-team2-bar" class="h-full bg-secondary-container rounded-r-full" style="width: 32%"></div>
+                        </div>
+                        <div class="flex justify-between font-stats-numeric text-stats-numeric text-sm">
+                            <span class="text-primary" id="prob-team1-lbl">58%</span>
+                            <span class="text-on-surface-variant" id="prob-draw-lbl">10% DRAW</span>
+                            <span class="text-secondary-fixed" id="prob-team2-lbl">32%</span>
+                        </div>
+                    </div>
+
+                    <!-- Voting Actions -->
+                    <div class="grid grid-cols-3 gap-3" id="voting-buttons">
+                        <button onclick="castVote('HOME')" id="vote-usa" class="bg-surface-container-high hover:bg-primary/20 border border-outline-variant/30 rounded-lg py-4 flex flex-col items-center transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-primary mb-1">thumb_up</span>
+                            <span class="font-label-caps text-[9px] text-center px-1" id="vote-usa-btn-lbl">BACK USA</span>
+                        </button>
+                        <button onclick="castVote('DRAW')" id="vote-draw" class="bg-surface-container-high hover:bg-surface-bright border border-outline-variant/30 rounded-lg py-4 flex flex-col items-center transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-on-surface-variant mb-1">balance</span>
+                            <span class="font-label-caps text-[9px]">DRAW</span>
+                        </button>
+                        <button onclick="castVote('AWAY')" id="vote-mex" class="bg-surface-container-high hover:bg-secondary-container/20 border border-outline-variant/30 rounded-lg py-4 flex flex-col items-center transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-secondary-fixed mb-1">thumb_up</span>
+                            <span class="font-label-caps text-[9px] text-center px-1" id="vote-mex-btn-lbl">BACK MEX</span>
+                        </button>
+                    </div>
+                    
+                    <div id="voted-overlay" class="hidden text-center py-4 bg-primary/10 border border-primary/25 rounded-xl mt-4">
+                        <p class="font-label-caps text-primary font-bold text-[11px]" id="voted-overlay-text">VOTE SUBMITTED! THANK YOU FOR PARTICIPATING.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Analyst Breakdown Card -->
+            <section class="glass-card rounded-xl p-5 inner-glow relative overflow-hidden" id="analysis-card">
+                <h3 class="font-headline-md text-headline-md mb-3 text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[22px]">psychology</span>
+                    AI Analytical Breakdown
+                </h3>
+                <p id="analysis-text" class="text-xs text-on-surface-variant leading-relaxed">
+                    Select a match to run the simulation and display the analytical breakdown.
+                </p>
+                <div class="mt-4 grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                    <div>
+                        <span class="font-label-caps text-[9px] text-on-surface-variant block mb-1">TEAM RANKINGS (FIFA)</span>
+                        <p id="team-ranks-info" class="text-xs text-white font-bold">-</p>
+                    </div>
+                    <div>
+                        <span class="font-label-caps text-[9px] text-on-surface-variant block mb-1">WORLD CUP TROPHIES</span>
+                        <p id="team-trophies-info" class="text-xs text-white font-bold">-</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Consensus Stats Card -->
+            <section class="glass-card rounded-xl p-5 inner-glow relative overflow-hidden">
+                <h3 class="font-headline-md text-headline-md mb-4 flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-primary">analytics</span>
+                    <span>Fan Consensus</span>
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-8 bg-primary rounded-full"></div>
+                            <span class="font-body-md text-white font-bold" id="consensus-team1-lbl">USA WIN</span>
+                        </div>
+                        <span id="consensus-usa" class="font-stats-numeric text-primary text-[18px]">42%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-8 bg-white/20 rounded-full"></div>
+                            <span class="font-body-md text-white font-bold">DRAW</span>
+                        </div>
+                        <span id="consensus-draw" class="font-stats-numeric text-on-surface-variant text-[18px]">28%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-8 bg-secondary-container rounded-full"></div>
+                            <span class="font-body-md text-white font-bold" id="consensus-team2-lbl">MEX WIN</span>
+                        </div>
+                        <span id="consensus-mex" class="font-stats-numeric text-secondary-fixed text-[18px]">30%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Momentum Analysis Chart -->
+            <section class="glass-card rounded-xl p-6 inner-glow overflow-hidden">
+                <h3 class="font-headline-md text-headline-md mb-6">Team Momentum</h3>
+                <div class="relative h-40 w-full flex items-end justify-around space-x-1" id="momentum-bars">
+                    <div class="w-full h-[40%] bg-surface-container-highest rounded-t-sm relative group">
+                        <div class="absolute bottom-0 left-0 right-0 h-[60%] bg-primary/40 rounded-t-sm transition-all group-hover:h-[80%]"></div>
+                    </div>
+                    <div class="w-full h-[60%] bg-surface-container-highest rounded-t-sm relative group">
+                        <div class="absolute bottom-0 left-0 right-0 h-[75%] bg-primary/40 rounded-t-sm transition-all group-hover:h-[90%]"></div>
+                    </div>
+                    <div class="w-full h-[50%] bg-surface-container-highest rounded-t-sm relative group">
+                        <div class="absolute bottom-0 left-0 right-0 h-[45%] bg-primary/60 rounded-t-sm transition-all group-hover:h-[60%]"></div>
+                    </div>
+                    <div class="w-full h-[90%] bg-surface-container-highest rounded-t-sm relative group">
+                        <div class="absolute bottom-0 left-0 right-0 h-[85%] bg-primary rounded-t-sm transition-all group-hover:h-full"></div>
+                    </div>
+                    <div class="w-full h-[70%] bg-surface-container-highest rounded-t-sm relative group">
+                        <div class="absolute bottom-0 left-0 right-0 h-[65%] bg-primary/40 rounded-t-sm transition-all group-hover:h-[80%]"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-4 font-label-caps text-[10px] text-on-surface-variant">
+                    <span>RECENT TEAM FORM INDICATOR</span>
+                    <span class="text-primary font-bold" id="momentum-trend-lbl">UPWARD TREND</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== RECORDS TAB ==================== -->
+        <div id="records-section" class="space-y-6 hidden">
+            <!-- Winners Card -->
+            <section class="glass-card rounded-xl p-5 inner-glow relative overflow-hidden">
+                <h3 class="font-headline-md text-headline-md mb-4 text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[22px]">workspace_premium</span>
+                    All-Time Winners
+                </h3>
+                <div class="overflow-x-auto no-scrollbar border border-white/5 rounded-2xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-white/5 font-label-caps text-[10px] text-on-surface-variant border-b border-white/15">
+                                <th class="p-3">YEAR</th>
+                                <th class="p-3">HOST</th>
+                                <th class="p-3">WINNER</th>
+                                <th class="p-3 text-right">SCORE</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <tr class="hover:bg-white/5">
+                                <td class="p-3 font-stats-numeric text-primary">2022</td>
+                                <td class="p-3 text-white">Qatar</td>
+                                <td class="p-3 font-bold text-white flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> Argentina
+                                </td>
+                                <td class="p-3 text-right font-stats-numeric text-on-surface-variant">3-3 (4-2 p)</td>
+                            </tr>
+                            <tr class="hover:bg-white/5">
+                                <td class="p-3 font-stats-numeric">2018</td>
+                                <td class="p-3 text-white">Russia</td>
+                                <td class="p-3 font-bold text-white flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> France
+                                </td>
+                                <td class="p-3 text-right font-stats-numeric text-on-surface-variant">4-2</td>
+                            </tr>
+                            <tr class="hover:bg-white/5">
+                                <td class="p-3 font-stats-numeric">2014</td>
+                                <td class="p-3 text-white">Brazil</td>
+                                <td class="p-3 font-bold text-white flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> Germany
+                                </td>
+                                <td class="p-3 text-right font-stats-numeric text-on-surface-variant">1-0 (aet)</td>
+                            </tr>
+                            <tr class="hover:bg-white/5">
+                                <td class="p-3 font-stats-numeric">2010</td>
+                                <td class="p-3 text-white">South Africa</td>
+                                <td class="p-3 font-bold text-white flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> Spain
+                                </td>
+                                <td class="p-3 text-right font-stats-numeric text-on-surface-variant">1-0 (aet)</td>
+                            </tr>
+                            <tr class="hover:bg-white/5">
+                                <td class="p-3 font-stats-numeric">2006</td>
+                                <td class="p-3 text-white">Germany</td>
+                                <td class="p-3 font-bold text-white flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> Italy
+                                </td>
+                                <td class="p-3 text-right font-stats-numeric text-on-surface-variant">1-1 (5-3 p)</td>
+                            </tr>
+                            <tr class="hover:bg-white/5">
+                                <td class="p-3 font-stats-numeric">2002</td>
+                                <td class="p-3 text-white">Korea/Japan</td>
+                                <td class="p-3 font-bold text-white flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> Brazil
+                                </td>
+                                <td class="p-3 text-right font-stats-numeric text-on-surface-variant">2-0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Scorers & Titles Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Titles leaderboard -->
+                <div class="glass-card rounded-xl p-4 inner-glow col-span-1 flex flex-col justify-between">
+                    <div>
+                        <span class="font-label-caps text-[9px] text-primary block mb-2">TITLES LEADERBOARD</span>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-white">Brazil</span>
+                                <span class="font-stats-numeric text-primary">5</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-white">Germany</span>
+                                <span class="font-stats-numeric">4</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-white">Italy</span>
+                                <span class="font-stats-numeric">4</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-white">Argentina</span>
+                                <span class="font-stats-numeric">3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Scorer Info -->
+                <div class="glass-card rounded-xl p-4 inner-glow col-span-1">
+                    <span class="font-label-caps text-[9px] text-secondary-fixed block mb-2">ALL-TIME TOP GOALS</span>
+                    <h4 class="font-bold text-[14px] text-white">Miroslav Klose</h4>
+                    <p class="text-[10px] text-on-surface-variant">Germany (2002-2014)</p>
+                    <div class="flex items-end gap-1.5 mt-2">
+                        <span class="font-stats-numeric text-primary text-[28px] leading-none">16</span>
+                        <span class="text-[10px] text-on-surface-variant mb-1 uppercase font-bold">GOALS</span>
+                    </div>
+                </div>
+
+                <!-- All-Time Scorers List -->
+                <div class="glass-card rounded-xl p-5 inner-glow col-span-2">
+                    <h4 class="font-headline-md text-[14px] text-white mb-3 uppercase tracking-wider">Top Goal Scorers</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center bg-white/5 rounded-xl p-3 border border-white/5 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="font-stats-numeric text-primary">01</span>
+                                <span class="font-bold text-white">Miroslav Klose</span>
+                                <span class="text-on-surface-variant text-[10px]">(GER)</span>
+                            </div>
+                            <span class="font-stats-numeric font-bold text-white">16 Goals</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white/5 rounded-xl p-3 border border-white/5 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="font-stats-numeric text-on-surface-variant">02</span>
+                                <span class="font-bold text-white">Ronaldo Nazário</span>
+                                <span class="text-on-surface-variant text-[10px]">(BRA)</span>
+                            </div>
+                            <span class="font-stats-numeric font-bold text-white">15 Goals</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white/5 rounded-xl p-3 border border-white/5 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="font-stats-numeric text-on-surface-variant">03</span>
+                                <span class="font-bold text-white">Gerd Müller</span>
+                                <span class="text-on-surface-variant text-[10px]">(GER)</span>
+                            </div>
+                            <span class="font-stats-numeric font-bold text-white">14 Goals</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white/5 rounded-xl p-3 border border-white/5 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="font-stats-numeric text-on-surface-variant">04</span>
+                                <span class="font-bold text-white">Lionel Messi</span>
+                                <span class="text-on-surface-variant text-[10px]">(ARG)</span>
+                            </div>
+                            <span class="font-stats-numeric font-bold text-white">13 Goals</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation Bar (Shared Component) -->
+    <nav class="fixed bottom-0 left-0 w-full md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:max-w-md md:rounded-2xl z-40 flex justify-around items-center px-4 py-3 bg-surface-container-low/80 backdrop-blur-lg border-t md:border border-white/10 rounded-t-xl shadow-lg">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="index.html">
+            <span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Standings</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="news.html">
+            <span class="material-symbols-outlined" data-icon="news">news</span>
+            <span class="font-label-caps text-label-caps mt-0.5">News</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="recaps.html">
+            <span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Recaps</span>
+        </a>
+        <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-2 px-4 active:scale-90 transition-transform" href="predict.html">
+            <span class="material-symbols-outlined" data-icon="insights" style="font-variation-settings: 'FILL' 1;">insights</span>
+            <span class="font-label-caps text-label-caps mt-0.5">Predict</span>
+        </a>
+    </nav>
+
+    <script>
+        // Tab system
+        function toggleMainTab(tabName) {
+            const predictSection = document.getElementById("predict-section");
+            const recordsSection = document.getElementById("records-section");
+            const predictBtn = document.getElementById("predict-tab-btn");
+            const recordsBtn = document.getElementById("records-tab-btn");
+
+            if (tabName === "predict") {
+                predictSection.classList.remove("hidden");
+                recordsSection.classList.add("hidden");
+                predictBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest active-tab transition-all";
+                recordsBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest text-on-surface-variant transition-all";
+            } else {
+                predictSection.classList.add("hidden");
+                recordsSection.classList.remove("hidden");
+                recordsBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest active-tab transition-all";
+                predictBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest text-on-surface-variant transition-all";
+            }
+        }
+
+        // Teams database matching ranks, form, and titles
+        const teamStats = {
+            "Argentina": { rank: 1, titles: 3, form: 94, badge: "https://r2.thesportsdb.com/images/media/team/badge/3zplhu1726167477.png/tiny" },
+            "France": { rank: 2, titles: 2, form: 92, badge: "https://r2.thesportsdb.com/images/media/team/badge/p3n0z51726166851.png/tiny" },
+            "Belgium": { rank: 3, titles: 0, form: 83, badge: "https://r2.thesportsdb.com/images/media/team/badge/8xlvxv1592062265.png/tiny" },
+            "England": { rank: 4, titles: 1, form: 87, badge: "https://r2.thesportsdb.com/images/media/team/badge/vf5ttc1726166739.png/tiny" },
+            "Brazil": { rank: 5, titles: 5, form: 89, badge: "https://r2.thesportsdb.com/images/media/team/badge/jl6dip1726167280.png/tiny" },
+            "Spain": { rank: 6, titles: 1, form: 88, badge: "https://r2.thesportsdb.com/images/media/team/badge/ncgqyr1726166942.png/tiny" },
+            "Portugal": { rank: 7, titles: 0, form: 86, badge: "https://r2.thesportsdb.com/images/media/team/badge/swqvpy1455466083.png/tiny" },
+            "Netherlands": { rank: 8, titles: 0, form: 82, badge: "https://r2.thesportsdb.com/images/media/team/badge/swqvpy1455466083.png/tiny" },
+            "Croatia": { rank: 10, titles: 0, form: 81, badge: "https://r2.thesportsdb.com/images/media/team/badge/vvtsyu1455465317.png/tiny" },
+            "Uruguay": { rank: 11, titles: 2, form: 80, badge: "https://r2.thesportsdb.com/images/media/team/badge/bss90a1637840151.png/tiny" },
+            "USA": { rank: 12, titles: 0, form: 78, badge: "https://r2.thesportsdb.com/images/media/team/badge/21f0oi1597948195.png/tiny" },
+            "Morocco": { rank: 13, titles: 0, form: 84, badge: "https://r2.thesportsdb.com/images/media/team/badge/hbmwkj1731791275.png/tiny" },
+            "Switzerland": { rank: 14, titles: 0, form: 78, badge: "https://r2.thesportsdb.com/images/media/team/badge/mb7yqe1717365808.png/tiny" },
+            "Mexico": { rank: 15, titles: 0, form: 76, badge: "https://r2.thesportsdb.com/images/media/team/badge/3rmosi1748525208.png/tiny" },
+            "Germany": { rank: 16, titles: 4, form: 85, badge: "https://r2.thesportsdb.com/images/media/team/badge/1xysi51726167152.png/tiny" },
+            "Japan": { rank: 18, titles: 0, form: 83, badge: "https://r2.thesportsdb.com/images/media/team/badge/ffsyxz1591989843.png/tiny" },
+            "Denmark": { rank: 19, titles: 0, form: 77, badge: "https://r2.thesportsdb.com/images/media/team/badge/e13arj1717365623.png/tiny" },
+            "Iran": { rank: 20, titles: 0, form: 73, badge: "https://r2.thesportsdb.com/images/media/team/badge/uttpvw1455465617.png/tiny" },
+            "Senegal": { rank: 21, titles: 0, form: 74, badge: "https://www.thesportsdb.com/images/media/team/badge/slayb01780546342.png/tiny" },
+            "South Korea": { rank: 23, titles: 0, form: 79, badge: "https://r2.thesportsdb.com/images/media/team/badge/ffsyxz1591989843.png/tiny" },
+            "Australia": { rank: 24, titles: 0, form: 73, badge: "https://r2.thesportsdb.com/images/media/team/badge/lark6k1661780848.png/tiny" },
+            "Poland": { rank: 28, titles: 0, form: 72, badge: "https://r2.thesportsdb.com/images/media/team/badge/ttvrxy1455466076.png/tiny" },
+            "Tunisia": { rank: 28, titles: 0, form: 70, badge: "https://r2.thesportsdb.com/images/media/team/badge/7r89rg1526727277.png/tiny" },
+            "Wales": { rank: 29, titles: 0, form: 68, badge: "https://r2.thesportsdb.com/images/media/team/badge/pdayn21591983222.png/tiny" },
+            "Ecuador": { rank: 30, titles: 0, form: 71, badge: "https://r2.thesportsdb.com/images/media/team/badge/47wv2y1591989301.png/tiny" },
+            "Costa Rica": { rank: 32, titles: 0, form: 69, badge: "https://r2.thesportsdb.com/images/media/team/badge/bss90a1637840151.png/tiny" },
+            "Serbia": { rank: 33, titles: 0, form: 73, badge: "https://r2.thesportsdb.com/images/media/team/badge/1xysi51726167152.png/tiny" },
+            "Qatar": { rank: 37, titles: 0, form: 60, badge: "https://r2.thesportsdb.com/images/media/team/badge/rs3ir31642708685.png/tiny" },
+            "Canada": { rank: 40, titles: 0, form: 75, badge: "https://r2.thesportsdb.com/images/media/team/badge/2t631f1595154867.png/tiny" },
+            "Cameroon": { rank: 43, titles: 0, form: 71, badge: "https://r2.thesportsdb.com/images/media/team/badge/txqspw1455463989.png/tiny" },
+            "Saudi Arabia": { rank: 56, titles: 0, form: 65, badge: "https://r2.thesportsdb.com/images/media/team/badge/24xwpq1594125742.png/tiny" },
+            "Ghana": { rank: 60, titles: 0, form: 67, badge: "https://r2.thesportsdb.com/images/media/team/badge/7r89rg1526727277.png/tiny" }
+        };
+
+        let activeMatchKey = "";
+        let currentHomeTeam = "USA";
+        let currentAwayTeam = "Mexico";
+        let apiFixtures = [];
+
+        const dynamicTeamCache = {};
+        const pendingTeamRequests = {};
+
+        async function fetchTeamDetailsFromName(name) {
+            if (dynamicTeamCache[name]) return dynamicTeamCache[name];
+            if (pendingTeamRequests[name]) return pendingTeamRequests[name];
+
+            pendingTeamRequests[name] = (async () => {
+                try {
+                    const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(name)}`);
+                    const data = await response.json();
+                    if (data && data.teams && data.teams.length > 0) {
+                        const team = data.teams[0];
+                        
+                        let hash = 0;
+                        for (let i = 0; i < name.length; i++) {
+                            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+                        }
+                        const seedRank = Math.abs(hash % 60) + 20;
+                        const seedForm = Math.abs(hash % 25) + 65;
+                        const seedTitles = Math.abs(hash % 100) > 95 ? 1 : 0;
+
+                        const stats = {
+                            rank: seedRank,
+                            titles: seedTitles,
+                            form: seedForm,
+                            badge: team.strBadge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop"
+                        };
+                        dynamicTeamCache[name] = stats;
+                        return stats;
+                    }
+                } catch (error) {
+                    console.error("Error fetching dynamic team details:", error);
+                }
+                return null;
+            })();
+
+            const res = await pendingTeamRequests[name];
+            delete pendingTeamRequests[name];
+            return res;
+        }
+
+        function getTeamStats(name) {
+            if (teamStats[name]) {
+                return teamStats[name];
+            }
+            if (dynamicTeamCache[name]) {
+                return dynamicTeamCache[name];
+            }
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const seedRank = Math.abs(hash % 60) + 20;
+            const seedForm = Math.abs(hash % 25) + 65;
+            const seedTitles = Math.abs(hash % 100) > 95 ? 1 : 0;
+            
+            return {
+                rank: seedRank,
+                titles: seedTitles,
+                form: seedForm,
+                badge: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop"
+            };
+        }
+
+        function runMatchSimulation(homeName, awayName, scoreOrTime = "VS", status = "LIVE POLLING") {
+            currentHomeTeam = homeName;
+            currentAwayTeam = awayName;
+            activeMatchKey = `predict_${homeName.replace(/\s+/g, '_')}_vs_${awayName.replace(/\s+/g, '_')}`;
+
+            // Trigger background fetches for missing team stats/badges
+            if (!teamStats[homeName] && !dynamicTeamCache[homeName]) {
+                fetchTeamDetailsFromName(homeName).then(stats => {
+                    if (stats && currentHomeTeam === homeName) {
+                        runMatchSimulation(homeName, awayName, scoreOrTime, status);
+                    }
+                });
+            }
+            if (!teamStats[awayName] && !dynamicTeamCache[awayName]) {
+                fetchTeamDetailsFromName(awayName).then(stats => {
+                    if (stats && currentAwayTeam === awayName) {
+                        runMatchSimulation(homeName, awayName, scoreOrTime, status);
+                    }
+                });
+            }
+
+            const t1 = getTeamStats(homeName);
+            const t2 = getTeamStats(awayName);
+
+            const s1_rank = Math.max(1, 100 - t1.rank);
+            const s2_rank = Math.max(1, 100 - t2.rank);
+            
+            const strength1 = s1_rank + (t1.titles * 15) + (t1.form * 0.5);
+            const strength2 = s2_rank + (t2.titles * 15) + (t2.form * 0.5);
+
+            const totalStrength = strength1 + strength2;
+            let homeProb = Math.round((strength1 / totalStrength) * 82);
+            let awayProb = Math.round((strength2 / totalStrength) * 82);
+            let drawProb = 18;
+
+            const diff = Math.abs(strength1 - strength2);
+            if (diff < 15) {
+                const boost = Math.round((15 - diff) * 0.5);
+                drawProb += boost;
+                homeProb -= Math.round(boost * 0.5);
+                awayProb -= Math.round(boost * 0.5);
+            }
+
+            const sum = homeProb + drawProb + awayProb;
+            if (sum !== 100) {
+                const adj = 100 - sum;
+                homeProb += adj;
+            }
+
+            document.getElementById("team1-name").textContent = homeName;
+            document.getElementById("team2-name").textContent = awayName;
+            document.getElementById("team1-badge").src = t1.badge;
+            document.getElementById("team2-badge").src = t2.badge;
+
+            document.getElementById("match-score-or-time").textContent = scoreOrTime;
+            const statusBadge = document.getElementById("match-status-badge");
+            statusBadge.textContent = status.toUpperCase();
+            if (status === "Finished" || status === "FT") {
+                statusBadge.className = "flex items-center space-x-1 bg-white/10 text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold";
+            } else {
+                statusBadge.className = "flex items-center space-x-1 bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-[10px] font-bold animate-pulse";
+            }
+
+            document.getElementById("prob-team1-lbl").textContent = `${homeProb}%`;
+            document.getElementById("prob-draw-lbl").textContent = `${drawProb}% DRAW`;
+            document.getElementById("prob-team2-lbl").textContent = `${awayProb}%`;
+
+            document.getElementById("prob-team1-bar").style.width = `${homeProb}%`;
+            document.getElementById("prob-draw-bar").style.width = `${drawProb}%`;
+            document.getElementById("prob-team2-bar").style.width = `${awayProb}%`;
+
+            document.getElementById("vote-usa-btn-lbl").textContent = `BACK ${homeName.substring(0, 5).toUpperCase()}`;
+            document.getElementById("vote-mex-btn-lbl").textContent = `BACK ${awayName.substring(0, 5).toUpperCase()}`;
+
+            const savedVote = localStorage.getItem(activeMatchKey);
+            const buttonsContainer = document.getElementById("voting-buttons");
+            const votedOverlay = document.getElementById("voted-overlay");
+
+            let nameSeed = 0;
+            for (let i = 0; i < activeMatchKey.length; i++) {
+                nameSeed += activeMatchKey.charCodeAt(i);
+            }
+            const offsetHome = (nameSeed % 11) - 5;
+            const offsetAway = (nameSeed % 7) - 3;
+            
+            let consensusHome = Math.max(5, homeProb + offsetHome);
+            let consensusAway = Math.max(5, awayProb + offsetAway);
+            let consensusDraw = 100 - consensusHome - consensusAway;
+            if (consensusDraw < 5) {
+                consensusDraw = 5;
+                consensusAway = 100 - consensusHome - consensusDraw;
+            }
+
+            let baseVotes = {
+                HOME: Math.round(150 * (consensusHome/100)),
+                DRAW: Math.round(150 * (consensusDraw/100)),
+                AWAY: Math.round(150 * (consensusAway/100))
+            };
+
+            if (savedVote) {
+                buttonsContainer.classList.add("hidden");
+                votedOverlay.classList.remove("hidden");
+                document.getElementById("voted-overlay-text").textContent = `VOTE SUBMITTED: YOU BACKED ${savedVote === 'HOME' ? homeName : (savedVote === 'AWAY' ? awayName : 'DRAW')}!`;
+                baseVotes[savedVote] += 1;
+            } else {
+                buttonsContainer.classList.remove("hidden");
+                votedOverlay.classList.add("hidden");
+            }
+
+            const totalVotes = baseVotes.HOME + baseVotes.DRAW + baseVotes.AWAY;
+            const pctHome = Math.round((baseVotes.HOME / totalVotes) * 100);
+            const pctDraw = Math.round((baseVotes.DRAW / totalVotes) * 100);
+            const pctAway = 100 - pctHome - pctDraw;
+
+            document.getElementById("consensus-team1-lbl").textContent = `${homeName.toUpperCase()} WIN`;
+            document.getElementById("consensus-team2-lbl").textContent = `${awayName.toUpperCase()} WIN`;
+            document.getElementById("consensus-usa").textContent = `${pctHome}%`;
+            document.getElementById("consensus-draw").textContent = `${pctDraw}%`;
+            document.getElementById("consensus-mex").textContent = `${pctAway}%`;
+
+            let analysis = "";
+            if (t1.rank < t2.rank) {
+                analysis += `<strong>${homeName}</strong> enters as the favorite, ranked <strong>#${t1.rank}</strong> in the FIFA standings, compared to <strong>${awayName}</strong> at <strong>#${t2.rank}</strong>. `;
+            } else if (t2.rank < t1.rank) {
+                analysis += `<strong>${awayName}</strong> enters as the favorite, ranked <strong>#${t2.rank}</strong> in the FIFA standings, compared to <strong>${homeName}</strong> at <strong>#${t1.rank}</strong>. `;
+            } else {
+                analysis += `Both teams are evenly ranked at <strong>#${t1.rank}</strong> in the FIFA world standings. `;
+            }
+
+            if (t1.titles > 0 || t2.titles > 0) {
+                analysis += `Historically, `;
+                if (t1.titles > t2.titles) {
+                    analysis += `<strong>${homeName}</strong> holds a massive championship pedigree advantage, boasting <strong>${t1.titles}</strong> World Cup title(s) against <strong>${t2.titles || 'zero'}</strong> for <strong>${awayName}</strong>. `;
+                } else if (t2.titles > t1.titles) {
+                    analysis += `<strong>${awayName}</strong> holds the championship pedigree edge with <strong>${t2.titles}</strong> World Cup title(s) against <strong>${t1.titles || 'zero'}</strong> for <strong>${homeName}</strong>. `;
+                } else {
+                    analysis += `both teams share a similar championship pedigree with <strong>${t1.titles}</strong> title(s) each. `;
+                }
+            } else {
+                analysis += `Neither squad has won a World Cup title, meaning both are fighting to establish a new historical milestone. `;
+            }
+
+            analysis += `Looking at recent match form, <strong>${homeName}</strong> shows a form rating of <strong>${t1.form}%</strong>, while <strong>${awayName}</strong> is rated at <strong>${t2.form}%</strong>. `;
+            
+            if (Math.abs(t1.form - t2.form) > 10) {
+                const betterForm = t1.form > t2.form ? homeName : awayName;
+                analysis += `This gives <strong>${betterForm}</strong> a significant momentum advantage entering this clash. `;
+            } else {
+                analysis += `Both teams possess extremely comparable form indicators, suggesting a highly competitive and tactical matchup. `;
+            }
+
+            document.getElementById("analysis-text").innerHTML = analysis;
+            document.getElementById("team-ranks-info").textContent = `${homeName}: #${t1.rank} | ${awayName}: #${t2.rank}`;
+            document.getElementById("team-trophies-info").textContent = `${homeName}: ${t1.titles} ⭐ | ${awayName}: ${t2.titles} ⭐`;
+
+            const momentumContainer = document.getElementById("momentum-bars");
+            momentumContainer.innerHTML = "";
+            const forms = [
+                Math.round(t1.form * 0.8),
+                Math.round(t1.form * 0.9),
+                t1.form,
+                Math.round(t2.form * 0.9),
+                Math.round(t2.form * 0.8)
+            ];
+            
+            forms.forEach((val, i) => {
+                const bar = document.createElement("div");
+                bar.className = "w-full bg-surface-container-highest rounded-t-sm relative group";
+                bar.style.height = `${val}%`;
+                
+                const inner = document.createElement("div");
+                inner.className = `absolute bottom-0 left-0 right-0 h-[80%] rounded-t-sm transition-all group-hover:h-full ${i < 3 ? 'bg-primary' : 'bg-secondary'}`;
+                
+                bar.appendChild(inner);
+                momentumContainer.appendChild(bar);
+            });
+
+            document.getElementById("momentum-trend-lbl").innerHTML = t1.form > t2.form 
+                ? `ADVANTAGE ${homeName.toUpperCase()} (${t1.form}% vs ${t2.form}%)`
+                : `ADVANTAGE ${awayName.toUpperCase()} (${t2.form}% vs ${t1.form}%)`;
+        }
+
+        async function loadSeasonFixtures() {
+            const season = document.getElementById("predict-season-select").value;
+            const matchSelect = document.getElementById("predict-match-select");
+            matchSelect.innerHTML = "<option>Loading fixtures...</option>";
+
+            try {
+                const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4429&s=${season}`);
+                const data = await response.json();
+                
+                if (data && data.events && data.events.length > 0) {
+                    apiFixtures = data.events;
+                    matchSelect.innerHTML = "";
+                    apiFixtures.forEach((evt, idx) => {
+                        const opt = document.createElement("option");
+                        opt.value = idx;
+                        opt.textContent = `${evt.strHomeTeam} vs ${evt.strAwayTeam} (${evt.strStatus === 'FT' ? 'Finished' : 'Upcoming'})`;
+                        matchSelect.appendChild(opt);
+                    });
+                    selectFixture();
+                } else {
+                    apiFixtures = [];
+                    matchSelect.innerHTML = "<option>No fixtures found</option>";
+                }
+            } catch (error) {
+                console.error("Error loading season fixtures:", error);
+                apiFixtures = [];
+                matchSelect.innerHTML = "<option>Error loading fixtures</option>";
+            }
+        }
+
+        function selectFixture() {
+            const select = document.getElementById("predict-match-select");
+            const idx = select.value;
+            if (apiFixtures[idx]) {
+                const evt = apiFixtures[idx];
+                const scoreOrTime = (evt.intHomeScore !== null && evt.intHomeScore !== undefined)
+                    ? `${evt.intHomeScore} - ${evt.intAwayScore}`
+                    : (evt.strTime ? evt.strTime.substring(0, 5) : "VS");
+                const status = evt.strStatus === "FT" ? "Finished" : "LIVE POLLING";
+                runMatchSimulation(evt.strHomeTeam, evt.strAwayTeam, scoreOrTime, status);
+            }
+        }
+
+        function populateCustomDropdowns() {
+            const homeSelect = document.getElementById("custom-home-select");
+            const awaySelect = document.getElementById("custom-away-select");
+            
+            homeSelect.innerHTML = "";
+            awaySelect.innerHTML = "";
+
+            const teams = Object.keys(teamStats).sort();
+            teams.forEach(team => {
+                const opt1 = document.createElement("option");
+                opt1.value = team;
+                opt1.textContent = team;
+                homeSelect.appendChild(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = team;
+                opt2.textContent = team;
+                awaySelect.appendChild(opt2);
+            });
+
+            homeSelect.value = "Argentina";
+            awaySelect.value = "France";
+        }
+
+        function runCustomSimulation() {
+            const home = document.getElementById("custom-home-select").value;
+            const away = document.getElementById("custom-away-select").value;
+            runMatchSimulation(home, away, "VS", "LIVE POLLING");
+        }
+
+        function changeSelectionMode(mode) {
+            const fixtureSelectors = document.getElementById("fixture-selectors");
+            const customSelectors = document.getElementById("custom-selectors");
+            const fixtureBtn = document.getElementById("mode-fixture-btn");
+            const customBtn = document.getElementById("mode-custom-btn");
+
+            if (mode === "fixture") {
+                fixtureSelectors.classList.remove("hidden");
+                customSelectors.classList.add("hidden");
+                
+                fixtureBtn.className = "flex-1 py-2 text-center rounded-lg font-bold font-label-caps text-[10px] tracking-widest bg-primary text-black transition-all";
+                customBtn.className = "flex-1 py-2 text-center rounded-lg font-bold font-label-caps text-[10px] tracking-widest text-on-surface-variant transition-all";
+                
+                selectFixture();
+            } else {
+                fixtureSelectors.classList.add("hidden");
+                customSelectors.classList.remove("hidden");
+
+                customBtn.className = "flex-1 py-2 text-center rounded-lg font-bold font-label-caps text-[10px] tracking-widest bg-primary text-black transition-all";
+                fixtureBtn.className = "flex-1 py-2 text-center rounded-lg font-bold font-label-caps text-[10px] tracking-widest text-on-surface-variant transition-all";
+
+                runCustomSimulation();
+            }
+        }
+
+        function castVote(choice) {
+            localStorage.setItem(activeMatchKey, choice);
+            const scoreOrTime = document.getElementById("match-score-or-time").textContent;
+            const status = document.getElementById("match-status-badge").textContent;
+            runMatchSimulation(currentHomeTeam, currentAwayTeam, scoreOrTime, status);
+        }
+
+        // Initialize Page
+        populateCustomDropdowns();
+        loadSeasonFixtures();
+    </script>
+</body>
+</html>
