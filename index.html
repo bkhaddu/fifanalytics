@@ -136,9 +136,7 @@
     <!-- Header / Top Bar -->
     <header class="sticky top-0 z-40 w-full px-4 py-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center shadow-lg shadow-primary/20">
-                <img src="logo.png" class="w-full h-full object-contain p-1" alt="FIFA Analytics Logo"/>
-            </div>
+            <img src="logo.png" class="h-10 w-auto object-contain" alt="FIFA Analytics Logo"/>
             <div>
                 <h1 class="font-display-sm text-[22px] leading-tight tracking-tight uppercase text-primary font-bold">FIFA Analytics</h1>
                 <p class="font-label-caps text-on-surface-variant text-[10px]">World Cup Analytics Hub • Live API Integration</p>
@@ -160,8 +158,8 @@
         <section class="py-6 flex flex-col gap-2">
             <div class="flex items-end justify-between">
                 <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">Standings</h2>
-                <span id="data-source-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 text-primary font-label-caps text-[10px]">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                <span id="data-source-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/20 text-secondary font-label-caps text-[10px]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
                     LIVE DATABASE
                 </span>
             </div>
@@ -285,15 +283,15 @@
             <span class="material-symbols-outlined" data-icon="leaderboard" data-weight="fill" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
             <span class="font-label-caps text-label-caps mt-0.5">Standings</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="news.html">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="news.html">
             <span class="material-symbols-outlined" data-icon="news">news</span>
             <span class="font-label-caps text-label-caps mt-0.5">News</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="recaps.html">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="recaps.html">
             <span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
             <span class="font-label-caps text-label-caps mt-0.5">Recaps</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="predict.html">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="predict.html">
             <span class="material-symbols-outlined" data-icon="insights">insights</span>
             <span class="font-label-caps text-label-caps mt-0.5">Predict</span>
         </a>
@@ -774,7 +772,7 @@
 
             matches.forEach((match, idx) => {
                 const card = document.createElement("div");
-                card.className = "glass-panel rounded-2xl p-5 border border-white/10 relative overflow-hidden group";
+                card.className = "glass-panel rounded-2xl p-5 border border-white/10 hover:border-secondary/30 relative overflow-hidden group transition-all duration-300";
                 
                 let flag1, flag2;
                 if (currentSeason === "2026") {
@@ -798,7 +796,7 @@
                 const clickAway = currentSeason === "2026" ? `openTeamDetails('${match.team2}', ${match.team2Id})` : `openTeamDetails('${match.team2}')`;
 
                 card.innerHTML = `
-                    <div class="absolute inset-0 stadium-glow opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10">
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-[10px] font-label-caps text-primary border border-primary/30 px-2 py-0.5 rounded-full">${match.matchday.toUpperCase()}</span>

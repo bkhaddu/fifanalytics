@@ -160,11 +160,11 @@
 
     <!-- Bottom Navigation Bar (Shared Component) -->
     <nav class="fixed bottom-0 left-0 w-full md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:max-w-md md:rounded-2xl z-40 flex justify-around items-center px-4 py-3 bg-surface-container-low/80 backdrop-blur-lg border-t md:border border-white/10 rounded-t-xl shadow-lg">
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="index.html">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="index.html">
             <span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
             <span class="font-label-caps text-label-caps mt-0.5">Standings</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="news.html">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="news.html">
             <span class="material-symbols-outlined" data-icon="news">news</span>
             <span class="font-label-caps text-label-caps mt-0.5">News</span>
         </a>
@@ -172,7 +172,7 @@
             <span class="material-symbols-outlined" data-icon="play_circle" style="font-variation-settings: 'FILL' 1;">play_circle</span>
             <span class="font-label-caps text-label-caps mt-0.5">Recaps</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="predict.html">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="predict.html">
             <span class="material-symbols-outlined" data-icon="insights">insights</span>
             <span class="font-label-caps text-label-caps mt-0.5">Predict</span>
         </a>
@@ -306,15 +306,15 @@
                             <!-- Left Section: Match & Video Metadata -->
                             <div class="max-w-[70%] space-y-3">
                                 <div class="flex items-center gap-2">
-                                    <span class="bg-primary text-on-primary font-label-caps text-[9px] px-2 py-0.5 rounded-full uppercase">HIGHLIGHTS</span>
+                                    <span class="bg-secondary text-white font-label-caps text-[9px] px-2 py-0.5 rounded-full uppercase">HIGHLIGHTS</span>
                                     <span class="text-on-surface-variant font-label-caps text-[9px] truncate">${match.strVenue}</span>
                                 </div>
                                 <h2 class="font-headline-lg-mobile text-[24px] md:text-headline-lg text-white leading-tight font-extrabold uppercase">${match.strHomeTeam} ${match.intHomeScore} - ${match.intAwayScore} ${match.strAwayTeam}</h2>
                                 <p class="text-on-surface-variant text-sm line-clamp-2">${desc}</p>
                                 
                                 <div class="flex items-center gap-2 mt-2">
-                                    <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center border border-white/10">
-                                        <span class="material-symbols-outlined text-[14px] text-on-primary">sports_soccer</span>
+                                    <div class="w-7 h-7 rounded-full bg-secondary flex items-center justify-center border border-white/10">
+                                        <span class="material-symbols-outlined text-[14px] text-white">sports_soccer</span>
                                     </div>
                                     <span class="font-label-caps text-[10px] text-on-surface">@FIFA_Official</span>
                                 </div>
@@ -331,10 +331,10 @@
                                 
                                 <!-- Watch Highlights Button (YouTube Video Link) -->
                                 <div class="flex flex-col items-center">
-                                    <a href="${match.strVideo}" target="_blank" class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center shadow-[0_0_20px_rgba(0,223,130,0.5)] hover:scale-105 active:scale-90 transition-all">
-                                        <span class="material-symbols-outlined text-on-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                                    <a href="${match.strVideo}" target="_blank" class="w-14 h-14 rounded-full bg-secondary flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.5)] hover:scale-105 active:scale-90 transition-all">
+                                        <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
                                     </a>
-                                    <span class="font-label-caps text-[9px] text-primary mt-1 font-bold">WATCH</span>
+                                    <span class="font-label-caps text-[9px] text-secondary mt-1 font-bold">WATCH</span>
                                 </div>
                                 
                                 <div class="flex flex-col items-center">
