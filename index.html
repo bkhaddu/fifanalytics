@@ -489,13 +489,24 @@
         let apiLoadedWCStandings = null;
         let apiLoadedWCMatches = null;
 
-        // Base fetcher with auth header for the proxied football-data.org API
+        // Base fetcher that dynamically selects between local Vite proxy and public CORS proxy in production
         async function fetchFromAPI(endpoint) {
-            const response = await fetch(`/api-football${endpoint}`, {
-                headers: {
-                    'X-Auth-Token': API_TOKEN
-                }
-            });
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            
+            let url;
+            let headers = {};
+
+            if (isLocal) {
+                // Local dev server handles proxying
+                url = `/api-football${endpoint}`;
+                headers['X-Auth-Token'] = API_TOKEN;
+            } else {
+                // Production (GitHub Pages) uses corsproxy.io with token passed via reqHeaders param
+                const targetUrl = `https://api.football-data.org/v4${endpoint}`;
+                url = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}&reqHeaders=x-auth-token:${encodeURIComponent(API_TOKEN)}`;
+            }
+
+            const response = await fetch(url, { headers });
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status} ${response.statusText}`);
             }
