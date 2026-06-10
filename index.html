@@ -485,7 +485,64 @@
         let apiLoadedGroupH = null;
         let apiLoadedMatches = [];
 
-        // Fetch standings from API for 2022 Group H
+        const API_TOKEN = "f491c940d6e346c4a566e6dd807c3992";
+        let apiLoadedWCStandings = null;
+        let apiLoadedWCMatches = null;
+
+        // Base fetcher with auth header for the proxied football-data.org API
+        async function fetchFromAPI(endpoint) {
+            const response = await fetch(`/api-football${endpoint}`, {
+                headers: {
+                    'X-Auth-Token': API_TOKEN
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        }
+
+        // Fetch standings from football-data.org for WC 2026
+        async function fetchWCStandingsFromAPI() {
+            if (apiLoadedWCStandings) return apiLoadedWCStandings;
+            try {
+                const data = await fetchFromAPI("/competitions/WC/standings");
+                if (data && data.standings) {
+                    apiLoadedWCStandings = {};
+                    data.standings.forEach(g => {
+                        const letter = g.group.replace("Group ", "");
+                        apiLoadedWCStandings[letter] = g.table.map(team => ({
+                            id: team.team.id,
+                            name: team.team.shortName || team.team.name,
+                            w: team.won,
+                            gd: team.goalDifference,
+                            pts: team.points,
+                            badge: team.team.crest,
+                            isLive: true
+                        }));
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching WC standings:", error);
+            }
+            return apiLoadedWCStandings;
+        }
+
+        // Fetch matches from football-data.org for WC 2026
+        async function fetchWCMatchesFromAPI() {
+            if (apiLoadedWCMatches) return apiLoadedWCMatches;
+            try {
+                const data = await fetchFromAPI("/competitions/WC/matches");
+                if (data && data.matches) {
+                    apiLoadedWCMatches = data.matches;
+                }
+            } catch (error) {
+                console.error("Error fetching WC matches:", error);
+            }
+            return apiLoadedWCMatches;
+        }
+
+        // Fetch standings from API for 2022 Group H (TheSportsDB fallback)
         async function fetchGroupHFromAPI() {
             try {
                 const response = await fetch("https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=4429&s=2022");
@@ -498,7 +555,6 @@
                         pts: parseInt(team.intPoints),
                         isLive: true
                     }));
-                    // Update table if currently viewing 2022 Group H
                     if (currentSeason === "2022" && currentGroup === "H") {
                         renderTable();
                     }
@@ -508,7 +564,7 @@
             }
         }
 
-        // Fetch matches and scores dynamically from the API
+        // Fetch matches and scores dynamically from TheSportsDB
         async function fetchMatchesFromAPI() {
             try {
                 const url = `https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4429&s=${currentSeason}`;
@@ -530,7 +586,13 @@
         function initializeGroupTabs() {
             const tabsContainer = document.getElementById("group-tabs");
             tabsContainer.innerHTML = "";
-            const groupsAvailable = Object.keys(historicalStandings[currentSeason] || {});
+            
+            let groupsAvailable = [];
+            if (currentSeason === "2026" && apiLoadedWCStandings) {
+                groupsAvailable = Object.keys(apiLoadedWCStandings);
+            } else {
+                groupsAvailable = Object.keys(historicalStandings[currentSeason] || {});
+            }
             
             groupsAvailable.forEach((group, index) => {
                 const btn = document.createElement("button");
@@ -547,10 +609,12 @@
                 tabsContainer.appendChild(btn);
             });
             
-            // Adjust currentGroup if not available in currentSeason
+            // Adjust currentGroup if not available in current season
             if (!groupsAvailable.includes(currentGroup) && groupsAvailable.length > 0) {
                 currentGroup = groupsAvailable[0];
-                tabsContainer.firstChild.className = "flex-shrink-0 px-6 py-3 rounded-xl font-bold transition-all active:scale-95 active-tab";
+                if (tabsContainer.firstChild) {
+                    tabsContainer.firstChild.className = "flex-shrink-0 px-6 py-3 rounded-xl font-bold transition-all active:scale-95 active-tab";
+                }
             }
         }
 
@@ -561,7 +625,17 @@
             tbody.innerHTML = "";
 
             let standings = [];
-            if (currentSeason === "2022" && currentGroup === "H" && apiLoadedGroupH) {
+            if (currentSeason === "2026") {
+                if (apiLoadedWCStandings && apiLoadedWCStandings[currentGroup]) {
+                    standings = apiLoadedWCStandings[currentGroup];
+                    badge.className = "flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/20 text-primary-container font-label-caps text-[10px]";
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> LIVE API`;
+                } else {
+                    standings = [];
+                    badge.className = "flex items-center gap-1.5 px-3 py-1 rounded-full bg-error/20 text-error font-label-caps text-[10px]";
+                    badge.innerHTML = `OFFLINE / RATELIMITED`;
+                }
+            } else if (currentSeason === "2022" && currentGroup === "H" && apiLoadedGroupH) {
                 standings = apiLoadedGroupH;
                 badge.className = "flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/20 text-primary-container font-label-caps text-[10px]";
                 badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> LIVE API`;
@@ -579,12 +653,23 @@
             standings.forEach((team, index) => {
                 const rank = String(index + 1).padStart(2, '0');
                 const isQualified = index < 2;
-                const dbInfo = teamDatabase[team.name] || {};
-                const badgeUrl = dbInfo.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                
+                let badgeUrl = "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                if (currentSeason === "2026") {
+                    badgeUrl = team.badge || badgeUrl;
+                } else {
+                    const dbInfo = teamDatabase[team.name] || {};
+                    badgeUrl = dbInfo.badge || badgeUrl;
+                }
                 
                 const row = document.createElement("div");
                 row.className = `grid grid-cols-[2.5rem_1fr_2.5rem_2.5rem_2.5rem] items-center px-4 py-5 hover:bg-white/5 transition-colors cursor-pointer ${isQualified ? '' : 'bg-error-container/5'}`;
-                row.onclick = () => openTeamDetails(team.name);
+                
+                if (currentSeason === "2026") {
+                    row.onclick = () => openTeamDetails(team.name, team.id);
+                } else {
+                    row.onclick = () => openTeamDetails(team.name);
+                }
                 
                 row.innerHTML = `
                     <span class="font-stats-numeric ${isQualified ? 'text-primary' : 'text-on-surface-variant'}">${rank}</span>
@@ -639,7 +724,23 @@
             container.innerHTML = "";
 
             let matches = [];
-            if (apiLoadedMatches && apiLoadedMatches.length > 0) {
+            if (currentSeason === "2026") {
+                if (apiLoadedWCMatches && apiLoadedWCMatches.length > 0) {
+                    matches = apiLoadedWCMatches.slice(0, 6).map(m => ({
+                        matchday: `Matchday ${m.matchday}`,
+                        date: new Date(m.utcDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                        team1: m.homeTeam.shortName || m.homeTeam.name,
+                        team2: m.awayTeam.shortName || m.awayTeam.name,
+                        score1: m.score.fullTime.home,
+                        score2: m.score.fullTime.away,
+                        venue: m.venue || "TBD",
+                        badge1: m.homeTeam.crest,
+                        badge2: m.awayTeam.crest,
+                        team1Id: m.homeTeam.id,
+                        team2Id: m.awayTeam.id
+                    }));
+                }
+            } else if (apiLoadedMatches && apiLoadedMatches.length > 0) {
                 matches = apiLoadedMatches.slice(0, 6).map(e => ({
                     matchday: `Round ${e.intRound}`,
                     date: e.dateEvent,
@@ -664,11 +765,16 @@
                 const card = document.createElement("div");
                 card.className = "glass-panel rounded-2xl p-5 border border-white/10 relative overflow-hidden group";
                 
-                const dbInfo1 = teamDatabase[match.team1] || {};
-                const dbInfo2 = teamDatabase[match.team2] || {};
-                
-                const flag1 = match.badge1 || dbInfo1.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
-                const flag2 = match.badge2 || dbInfo2.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                let flag1, flag2;
+                if (currentSeason === "2026") {
+                    flag1 = match.badge1 || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                    flag2 = match.badge2 || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                } else {
+                    const dbInfo1 = teamDatabase[match.team1] || {};
+                    const dbInfo2 = teamDatabase[match.team2] || {};
+                    flag1 = match.badge1 || dbInfo1.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                    flag2 = match.badge2 || dbInfo2.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                }
                 
                 const scoreText = (match.score1 !== null && match.score1 !== undefined) 
                     ? `${match.score1} - ${match.score2}` 
@@ -676,6 +782,9 @@
                 
                 const homeImgId = `spotlight-home-${idx}`;
                 const awayImgId = `spotlight-away-${idx}`;
+
+                const clickHome = currentSeason === "2026" ? `openTeamDetails('${match.team1}', ${match.team1Id})` : `openTeamDetails('${match.team1}')`;
+                const clickAway = currentSeason === "2026" ? `openTeamDetails('${match.team2}', ${match.team2Id})` : `openTeamDetails('${match.team2}')`;
 
                 card.innerHTML = `
                     <div class="absolute inset-0 stadium-glow opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -685,7 +794,7 @@
                             <span class="text-[10px] font-label-caps text-on-surface-variant">${match.date.toUpperCase()}</span>
                         </div>
                         <div class="flex items-center justify-between gap-4">
-                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="openTeamDetails('${match.team1}')">
+                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="${clickHome}">
                                 <img id="${homeImgId}" alt="${match.team1}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag1}"/>
                                 <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team1}</span>
                             </div>
@@ -695,7 +804,7 @@
                                 </div>
                                 <div class="px-2 py-0.5 rounded bg-white/10 text-[9px] font-label-caps text-on-surface-variant text-center max-w-[120px] truncate">${match.venue}</div>
                             </div>
-                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="openTeamDetails('${match.team2}')">
+                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="${clickAway}">
                                 <img id="${awayImgId}" alt="${match.team2}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag2}"/>
                                 <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team2}</span>
                             </div>
@@ -705,30 +814,29 @@
                 container.appendChild(card);
 
                 // Dynamically fetch and update the badge from API if not already in local database
-                if (!match.badge1 && !dbInfo1.badge) {
-                    ensureTeamInDatabase(match.team1).then(info => {
-                        if (info && info.badge) {
-                            const img = document.getElementById(homeImgId);
-                            if (img) img.src = info.badge;
-                        }
-                    });
-                }
-                if (!match.badge2 && !dbInfo2.badge) {
-                    ensureTeamInDatabase(match.team2).then(info => {
-                        if (info && info.badge) {
-                            const img = document.getElementById(awayImgId);
-                            if (img) img.src = info.badge;
-                        }
-                    });
+                if (currentSeason !== "2026") {
+                    if (!match.badge1 && !dbInfo1.badge) {
+                        ensureTeamInDatabase(match.team1).then(info => {
+                            if (info && info.badge) {
+                                const img = document.getElementById(homeImgId);
+                                if (img) img.src = info.badge;
+                            }
+                        });
+                    }
+                    if (!match.badge2 && !dbInfo2.badge) {
+                        ensureTeamInDatabase(match.team2).then(info => {
+                            if (info && info.badge) {
+                                const img = document.getElementById(awayImgId);
+                                if (img) img.src = info.badge;
+                            }
+                        });
+                    }
                 }
             });
         }
 
         // Open Team Details dynamically from API
-        async function openTeamDetails(teamName) {
-            let dbInfo = teamDatabase[teamName];
-            let teamId = dbInfo ? dbInfo.id : null;
-
+        async function openTeamDetails(teamName, teamId) {
             const modal = document.getElementById("team-modal");
             const container = document.getElementById("modal-container");
             const loader = document.getElementById("modal-loader");
@@ -741,15 +849,81 @@
             loader.classList.remove("hidden");
 
             try {
-                if (!teamId) {
+                if (currentSeason === "2026") {
+                    if (!teamId) {
+                        const standings = await fetchWCStandingsFromAPI();
+                        if (standings) {
+                            for (const g in standings) {
+                                const found = standings[g].find(t => t.name.toLowerCase() === teamName.toLowerCase());
+                                if (found) {
+                                    teamId = found.id;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!teamId) {
+                        const squadContainer = document.getElementById("modal-squad-grid");
+                        squadContainer.innerHTML = `<p class="col-span-2 text-center text-on-surface-variant font-label-caps py-6">Team details not found in API</p>`;
+                        document.getElementById("modal-team-name").textContent = teamName;
+                        document.getElementById("modal-formed-year").textContent = "";
+                        document.getElementById("modal-badge").src = "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                        document.getElementById("modal-banner").src = "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop";
+                        document.getElementById("modal-stadium").textContent = "-";
+                        document.getElementById("modal-nation").textContent = "-";
+                        return;
+                    }
+
+                    const team = await fetchFromAPI(`/teams/${teamId}`);
+                    if (team) {
+                        document.getElementById("modal-team-name").textContent = team.name;
+                        document.getElementById("modal-formed-year").textContent = `FOUNDED ${team.founded || "N/A"}`;
+                        document.getElementById("modal-badge").src = team.crest || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                        document.getElementById("modal-banner").src = "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop";
+                        document.getElementById("modal-stadium").textContent = team.venue || "Not Listed";
+                        document.getElementById("modal-nation").textContent = team.area ? team.area.name : "-";
+
+                        const squadContainer = document.getElementById("modal-squad-grid");
+                        squadContainer.innerHTML = "";
+
+                        const squad = team.squad || [];
+                        if (squad.length === 0) {
+                            squadContainer.innerHTML = `<p class="col-span-2 text-center text-on-surface-variant font-label-caps py-6">Roster is empty or unavailable</p>`;
+                        } else {
+                            squad.forEach(player => {
+                                const card = document.createElement("div");
+                                card.className = "flex items-center gap-3 bg-white/5 rounded-xl p-3 border border-white/5 hover:border-primary/20 transition-all";
+                                
+                                card.innerHTML = `
+                                    <div class="w-10 h-10 rounded-full overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h5 class="font-bold text-[13px] text-white truncate">${player.name}</h5>
+                                        <p class="text-[10px] text-on-surface-variant truncate">${player.position || "Squad"}</p>
+                                    </div>
+                                `;
+                                squadContainer.appendChild(card);
+                            });
+                        }
+                    }
+                    return;
+                }
+
+                // Historical flow (thesportsdb)
+                let dbInfo = teamDatabase[teamName];
+                let teamIdToUse = dbInfo ? dbInfo.id : null;
+
+                if (!teamIdToUse) {
                     const searchRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(teamName)}`);
                     const searchData = await searchRes.json();
                     if (searchData && searchData.teams && searchData.teams[0]) {
-                        teamId = searchData.teams[0].idTeam;
+                        teamIdToUse = searchData.teams[0].idTeam;
                     }
                 }
 
-                if (!teamId) {
+                if (!teamIdToUse) {
                     const squadContainer = document.getElementById("modal-squad-grid");
                     squadContainer.innerHTML = `<p class="col-span-2 text-center text-on-surface-variant font-label-caps py-6">Team details not found in API</p>`;
                     document.getElementById("modal-team-name").textContent = teamName;
@@ -761,13 +935,11 @@
                     return;
                 }
 
-                // Fetch team details
-                const teamRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/lookupteam.php?id=${teamId}`);
+                const teamRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/lookupteam.php?id=${teamIdToUse}`);
                 const teamData = await teamRes.json();
                 const team = teamData.teams ? teamData.teams[0] : null;
 
-                // Fetch squad details
-                const squadRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/lookup_all_players.php?id=${teamId}`);
+                const squadRes = await fetch(`https://www.thesportsdb.com/api/v1/json/3/lookup_all_players.php?id=${teamIdToUse}`);
                 const squadData = await squadRes.json();
                 const players = squadData.player || [];
 
@@ -824,16 +996,36 @@
         // Season Selector Listener
         document.getElementById("season-selector").addEventListener("change", async (e) => {
             currentSeason = e.target.value;
+            
+            document.getElementById("table-loader").classList.remove("hidden");
+            if (currentSeason === "2026") {
+                await fetchWCStandingsFromAPI();
+                await fetchWCMatchesFromAPI();
+            } else {
+                await fetchMatchesFromAPI();
+            }
+            document.getElementById("table-loader").classList.add("hidden");
+
             initializeGroupTabs();
             renderTable();
-            await fetchMatchesFromAPI();
         });
 
         // Initialize Page
-        initializeGroupTabs();
-        renderTable();
-        fetchGroupHFromAPI();
-        fetchMatchesFromAPI();
+        async function initPage() {
+            document.getElementById("table-loader").classList.remove("hidden");
+            if (currentSeason === "2026") {
+                await fetchWCStandingsFromAPI();
+                await fetchWCMatchesFromAPI();
+            } else {
+                fetchGroupHFromAPI();
+                await fetchMatchesFromAPI();
+            }
+            document.getElementById("table-loader").classList.add("hidden");
+
+            initializeGroupTabs();
+            renderTable();
+        }
+        initPage();
     </script>
 </body>
 </html>
