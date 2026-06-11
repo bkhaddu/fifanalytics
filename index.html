@@ -1074,6 +1074,8 @@
                         team1Id: m.homeTeam.id,
                         team2Id: m.awayTeam.id
                     }));
+                } else {
+                    matches = spotlightMatchesData["2026"] || [];
                 }
             } else if (apiLoadedMatches && apiLoadedMatches.length > 0) {
                 matches = apiLoadedMatches.slice(0, 6).map(e => ({
@@ -1089,6 +1091,8 @@
                 }));
             } else {
                 matches = spotlightMatchesData[currentSeason] || [];
+            }
+
             if (matches.length === 0) {
                 container.innerHTML = `<p class="text-on-surface-variant text-[13px] italic">No spotlight matches recorded.</p>`;
                 return;
@@ -2638,14 +2642,30 @@
             currentSeason = e.target.value;
             
             document.getElementById("table-loader").classList.remove("hidden");
-            if (currentSeason === "2026") {
-                await fetchWCStandingsFromAPI();
-                await fetchWCMatchesFromAPI();
-            } else {
-                await fetchMatchesFromAPI();
+            
+            try {
+                if (currentSeason === "2026") {
+                    await fetchWCStandingsFromAPI();
+                } else {
+                    await fetchMatchesFromAPI();
+                }
+            } catch (error) {
+                console.error("Error on season change standings fetch:", error);
             }
             
-            await fetchAPIFootballFixtures(currentSeason);
+            try {
+                if (currentSeason === "2026") {
+                    await fetchWCMatchesFromAPI();
+                }
+            } catch (error) {
+                console.error("Error on season change matches fetch:", error);
+            }
+            
+            try {
+                await fetchAPIFootballFixtures(currentSeason);
+            } catch (error) {
+                console.error("Error on season change API-Football fixtures fetch:", error);
+            }
             
             document.getElementById("table-loader").classList.add("hidden");
 
@@ -2656,15 +2676,32 @@
         // Initialize Page
         async function initPage() {
             document.getElementById("table-loader").classList.remove("hidden");
-            if (currentSeason === "2026") {
-                await fetchWCStandingsFromAPI();
-                await fetchWCMatchesFromAPI();
-            } else {
-                fetchGroupHFromAPI();
-                await fetchMatchesFromAPI();
+            
+            try {
+                if (currentSeason === "2026") {
+                    await fetchWCStandingsFromAPI();
+                } else {
+                    fetchGroupHFromAPI();
+                }
+            } catch (error) {
+                console.error("Error on init standings fetch:", error);
             }
             
-            await fetchAPIFootballFixtures(currentSeason);
+            try {
+                if (currentSeason === "2026") {
+                    await fetchWCMatchesFromAPI();
+                } else {
+                    await fetchMatchesFromAPI();
+                }
+            } catch (error) {
+                console.error("Error on init matches fetch:", error);
+            }
+            
+            try {
+                await fetchAPIFootballFixtures(currentSeason);
+            } catch (error) {
+                console.error("Error on init API-Football fixtures fetch:", error);
+            }
             
             document.getElementById("table-loader").classList.add("hidden");
 
