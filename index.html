@@ -1764,13 +1764,6 @@
 
         async function fetchAPIFootballFixtures(season) {
             const cacheKey = "api_football_fixtures_" + season;
-            const cached = localStorage.getItem(cacheKey);
-            const cacheTime = localStorage.getItem(cacheKey + "_time");
-            
-            if (cached && cacheTime && (Date.now() - parseInt(cacheTime) < 10 * 60 * 1000)) {
-                return JSON.parse(cached);
-            }
-            
             try {
                 const response = await fetch(`https://v3.football.api-sports.io/fixtures?league=1&season=${season}`, {
                     method: 'GET',
@@ -1787,6 +1780,8 @@
             } catch (error) {
                 console.error("Error fetching fixtures from API-Football:", error);
             }
+            // Fallback to cache only on network failure
+            const cached = localStorage.getItem(cacheKey);
             return cached ? JSON.parse(cached) : [];
         }
 
