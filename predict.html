@@ -496,6 +496,22 @@
                     </button>
                 </div>
 
+                <!-- Live Match Selector -->
+                <div class="grid grid-cols-2 gap-3.5 mb-5 bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="font-label-caps text-[9px] text-on-surface-variant tracking-wider">HOME TEAM</label>
+                        <select id="live-home-select" onchange="updateLiveTeams()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary cursor-pointer w-full">
+                            <!-- Filled dynamically -->
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="font-label-caps text-[9px] text-on-surface-variant tracking-wider">AWAY TEAM</label>
+                        <select id="live-away-select" onchange="updateLiveTeams()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary cursor-pointer w-full">
+                            <!-- Filled dynamically -->
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Match Scoreboard -->
                 <div class="flex justify-between items-center bg-white/5 rounded-2xl border border-white/5 p-5 mb-6">
                     <div class="text-center flex-1">
@@ -1510,6 +1526,104 @@
             drawComparisonRadar("compare-radar-chart", p1, p2);
         }
 
+        // ==================== LIVE CENTER SIMULATION UTILITIES ====================
+        const popularPlayers = {
+            "Argentina": { F: ["Lionel Messi", "Julián Álvarez", "Lautaro Martínez"], M: ["Rodrigo De Paul", "Alexis Mac Allister", "Enzo Fernández"], D: ["Cristian Romero", "Nicolás Otamendi", "Nahuel Molina"] },
+            "France": { F: ["Kylian Mbappé", "Olivier Giroud", "Ousmane Dembélé"], M: ["Aurélien Tchouaméni", "Eduardo Camavinga", "Adrien Rabiot"], D: ["Dayot Upamecano", "William Saliba", "Theo Hernandez"] },
+            "Brazil": { F: ["Vinícius Júnior", "Rodrygo", "Richarlison"], M: ["Casemiro", "Lucas Paquetá", "Bruno Guimarães"], D: ["Marquinhos", "Éder Militão", "Danilo"] },
+            "England": { F: ["Harry Kane", "Bukayo Saka", "Phil Foden"], M: ["Jude Bellingham", "Declan Rice", "Conor Gallagher"], D: ["John Stones", "Kyle Walker", "Kieran Trippier"] },
+            "Germany": { F: ["Kai Havertz", "Niclas Füllkrug", "Serge Gnabry"], M: ["Jamal Musiala", "Florian Wirtz", "İlkay Gündoğan"], D: ["Antonio Rüdiger", "Jonathan Tah", "David Raum"] },
+            "Spain": { F: ["Alvaro Morata", "Lamine Yamal", "Nico Williams"], M: ["Rodri", "Pedri", "Gavi"], D: ["Dani Carvajal", "Aymeric Laporte", "Robin Le Normand"] },
+            "Portugal": { F: ["Cristiano Ronaldo", "Rafael Leão", "João Félix"], M: ["Bruno Fernandes", "Bernardo Silva", "Vitinha"], D: ["Rúben Dias", "João Cancelo", "Diogo Dalot"] },
+            "Netherlands": { F: ["Memphis Depay", "Cody Gakpo", "Wout Weghorst"], M: ["Frenkie de Jong", "Xavi Simons", "Tijjani Reijnders"], D: ["Virgil van Dijk", "Nathan Aké", "Matthijs de Ligt"] },
+            "Belgium": { F: ["Romelu Lukaku", "Leandro Trossard", "Jeremy Doku"], M: ["Kevin De Bruyne", "Amadou Onana", "Youri Tielemans"], D: ["Jan Vertonghen", "Wout Faes", "Timothy Castagne"] },
+            "Croatia": { F: ["Andrej Kramarić", "Ivan Perišić", "Bruno Petković"], M: ["Luka Modrić", "Mateo Kovačić", "Marcelo Brozović"], D: ["Joško Gvardiol", "Josip Šutalo", "Borna Sosa"] },
+            "Uruguay": { F: ["Darwin Núñez", "Luis Suárez", "Facundo Pellistri"], M: ["Federico Valverde", "Rodrigo Bentancur", "Manuel Ugarte"], D: ["Ronald Araújo", "José María Giménez", "Mathías Olivera"] },
+            "USA": { F: ["Christian Pulisic", "Timothy Weah", "Folarin Balogun"], M: ["Weston McKennie", "Tyler Adams", "Yunus Musah"], D: ["Antonee Robinson", "Tim Ream", "Chris Richards"] },
+            "Mexico": { F: ["Santiago Giménez", "Henry Martín", "Hirving Lozano"], M: ["Edson Álvarez", "Luis Chávez", "Orbelín Pineda"], D: ["César Montes", "Johan Vásquez", "Jorge Sánchez"] }
+        };
+
+        function getTeamPlayer(teamName, group) {
+            const squad = popularPlayers[teamName];
+            if (squad && squad[group]) {
+                const list = squad[group];
+                return list[Math.floor(Math.random() * list.length)];
+            }
+            if (group === "F") {
+                const names = ["Number 9", "Striker", "Forward", "Winger", "Captain"];
+                return names[Math.floor(Math.random() * names.length)];
+            } else if (group === "M") {
+                const names = ["Playmaker", "Midfielder", "Number 8", "Number 10"];
+                return names[Math.floor(Math.random() * names.length)];
+            } else {
+                const names = ["Defender", "Center Back", "Full Back", "Stopper"];
+                return names[Math.floor(Math.random() * names.length)];
+            }
+        }
+
+        function updateLiveTeams() {
+            if (liveSimInterval) {
+                toggleLiveMatchSimulation();
+            }
+
+            const home = document.getElementById("live-home-select").value;
+            const away = document.getElementById("live-away-select").value;
+
+            document.getElementById("live-home-name").textContent = home.toUpperCase();
+            document.getElementById("live-away-name").textContent = away.toUpperCase();
+
+            document.getElementById("live-match-score").textContent = "0 - 0";
+            document.getElementById("live-match-minute").textContent = "NOT STARTED";
+            document.getElementById("live-timeline-events").innerHTML = `<p class="text-center text-on-surface-variant text-[11px] font-label-caps py-12">Simulate match to generate events timeline</p>`;
+            
+            initHeatmap();
+
+            const t1 = getTeamStats(home);
+            const t2 = getTeamStats(away);
+            document.getElementById("live-home-badge").src = t1.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+            document.getElementById("live-away-badge").src = t2.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+        }
+
+        function populateLiveDropdowns() {
+            const homeSelect = document.getElementById("live-home-select");
+            const awaySelect = document.getElementById("live-away-select");
+            if (!homeSelect || !awaySelect) return;
+            
+            homeSelect.innerHTML = "";
+            awaySelect.innerHTML = "";
+
+            const teams = Object.keys(teamStats).sort();
+            teams.forEach(team => {
+                const opt1 = document.createElement("option");
+                opt1.value = team;
+                opt1.textContent = team;
+                homeSelect.appendChild(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = team;
+                opt2.textContent = team;
+                awaySelect.appendChild(opt2);
+            });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const homeParam = urlParams.get('home');
+            const awayParam = urlParams.get('away');
+
+            if (homeParam && teams.includes(homeParam)) {
+                homeSelect.value = homeParam;
+            } else {
+                homeSelect.value = "Argentina";
+            }
+
+            if (awayParam && teams.includes(awayParam)) {
+                awaySelect.value = awayParam;
+            } else {
+                awaySelect.value = "France";
+            }
+
+            updateLiveTeams();
+        }
+
         // ==================== LIVE CENTER SIMULATION LOGIC ====================
         let liveSimInterval = null;
         let liveSimMinute = 0;
@@ -1619,17 +1733,20 @@
                 }
                 drawHeatmap();
 
+                const homeName = document.getElementById("live-home-select").value;
+                const awayName = document.getElementById("live-away-select").value;
+
                 const rand = Math.random();
                 if (rand < 0.18) {
                     const isHome = Math.random() < 0.55;
                     let scorer = "";
                     if (isHome) {
                         liveHomeScore++;
-                        scorer = Math.random() < 0.6 ? "Lionel Messi" : "Julián Álvarez";
+                        scorer = getTeamPlayer(homeName, "F");
                         heatmapPoints.push({ x: 85, y: 50, isHome: true, radius: 45, intensity: 0.85 });
                     } else {
                         liveAwayScore++;
-                        scorer = Math.random() < 0.6 ? "Kylian Mbappé" : "Marcus Thuram";
+                        scorer = getTeamPlayer(awayName, "F");
                         heatmapPoints.push({ x: 15, y: 50, isHome: false, radius: 45, intensity: 0.85 });
                     }
                     document.getElementById("live-match-score").textContent = `${liveHomeScore} - ${liveAwayScore}`;
@@ -1640,21 +1757,21 @@
                             <span class="material-symbols-outlined text-primary text-[18px]">sports_soccer</span>
                             <div class="flex-1 min-w-0">
                                 <h5 class="text-xs font-bold text-white">${liveSimMinute}' - GOAL!</h5>
-                                <p class="text-[10px] text-on-surface-variant font-bold">${scorer} scores for ${isHome ? 'ARGENTINA' : 'FRANCE'}! (${liveHomeScore} - ${liveAwayScore})</p>
+                                <p class="text-[10px] text-on-surface-variant font-bold">${scorer} scores for ${isHome ? homeName.toUpperCase() : awayName.toUpperCase()}! (${liveHomeScore} - ${liveAwayScore})</p>
                             </div>
                         </div>
                     ` + timeline.innerHTML;
 
                 } else if (rand < 0.38) {
                     const isHome = Math.random() < 0.5;
-                    const player = isHome ? (Math.random() < 0.5 ? "Rodrigo De Paul" : "Cristian Romero") : (Math.random() < 0.5 ? "Aurélien Tchouaméni" : "Dayot Upamecano");
+                    const player = isHome ? getTeamPlayer(homeName, "M") : getTeamPlayer(awayName, "D");
                     
                     timeline.innerHTML = `
                         <div class="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
                             <span class="material-symbols-outlined text-yellow-500 text-[16px]">note</span>
                             <div class="flex-1 min-w-0">
                                 <h5 class="text-xs font-bold text-white">${liveSimMinute}' - Yellow Card</h5>
-                                <p class="text-[10px] text-on-surface-variant">${player} (${isHome ? 'ARG' : 'FRA'}) receives a caution.</p>
+                                <p class="text-[10px] text-on-surface-variant">${player} (${isHome ? homeName.substring(0, 3).toUpperCase() : awayName.substring(0, 3).toUpperCase()}) receives a caution.</p>
                             </div>
                         </div>
                     ` + timeline.innerHTML;
@@ -1666,7 +1783,7 @@
                             <span class="material-symbols-outlined text-green-500 text-[16px]">sync</span>
                             <div class="flex-1 min-w-0">
                                 <h5 class="text-xs font-bold text-white">${liveSimMinute}' - Substitution</h5>
-                                <p class="text-[10px] text-on-surface-variant">Tactical change made by ${isHome ? 'ARGENTINA' : 'FRANCE'}.</p>
+                                <p class="text-[10px] text-on-surface-variant">Tactical change made by ${isHome ? homeName.toUpperCase() : awayName.toUpperCase()}.</p>
                             </div>
                         </div>
                     ` + timeline.innerHTML;
@@ -1682,7 +1799,19 @@
         loadSeasonFixtures();
         initBracket();
         populateComparisonDropdowns();
+        populateLiveDropdowns();
         initHeatmap();
+
+        // Check for tab parameter in URL and switch to it
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        if (tab && ['predict', 'bracket', 'compare', 'live', 'records'].includes(tab)) {
+            toggleMainTab(tab);
+            const btn = document.getElementById(`${tab}-tab-btn`);
+            if (btn) {
+                btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+            }
+        }
     </script>
 </body>
 </html>

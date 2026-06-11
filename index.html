@@ -171,6 +171,67 @@
             </div>
         </section>
 
+        <!-- Interactive Fan Hub Section -->
+        <section class="mb-8 mt-2">
+            <h3 class="font-headline-md text-on-surface mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[20px]">explore</span>
+                Interactive Fan Hub
+            </h3>
+            <div class="grid grid-cols-2 gap-3.5">
+                <!-- Card 1: Bracket Simulator -->
+                <a href="predict.html?tab=bracket" class="glass-card rounded-2xl p-4 inner-glow hover:border-secondary/40 transition-all flex flex-col justify-between group h-36 border border-white/5 relative overflow-hidden bg-white/5">
+                    <div class="absolute -right-4 -top-4 w-12 h-12 bg-secondary/10 rounded-full blur-xl group-hover:bg-secondary/20 transition-all"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-secondary text-[24px] bg-secondary/10 p-2 rounded-xl">account_tree</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[14px] group-hover:text-secondary group-hover:translate-x-1 transition-all">arrow_forward</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white mb-1">Bracket Simulator</h4>
+                        <p class="text-[9px] text-on-surface-variant leading-tight">Predict R16 down to the Final and simulate the champion.</p>
+                    </div>
+                </a>
+                
+                <!-- Card 2: Player Comparison -->
+                <a href="predict.html?tab=compare" class="glass-card rounded-2xl p-4 inner-glow hover:border-primary/40 transition-all flex flex-col justify-between group h-36 border border-white/5 relative overflow-hidden bg-white/5">
+                    <div class="absolute -right-4 -top-4 w-12 h-12 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-primary text-[24px] bg-primary/10 p-2 rounded-xl">compare_arrows</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[14px] group-hover:text-primary group-hover:translate-x-1 transition-all">arrow_forward</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white mb-1">Player Comparison</h4>
+                        <p class="text-[9px] text-on-surface-variant leading-tight">Compare stats side-by-side using neon overlapping radar charts.</p>
+                    </div>
+                </a>
+                
+                <!-- Card 3: Live Match Center -->
+                <a href="predict.html?tab=live" class="glass-card rounded-2xl p-4 inner-glow hover:border-secondary/40 transition-all flex flex-col justify-between group h-36 border border-white/5 relative overflow-hidden bg-white/5">
+                    <div class="absolute -right-4 -top-4 w-12 h-12 bg-secondary/10 rounded-full blur-xl group-hover:bg-secondary/20 transition-all"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-secondary text-[24px] bg-secondary/10 p-2 rounded-xl">analytics</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[14px] group-hover:text-secondary group-hover:translate-x-1 transition-all">arrow_forward</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white mb-1">Live Match Center</h4>
+                        <p class="text-[9px] text-on-surface-variant leading-tight">Simulate games with 2D territory heatmaps and event log.</p>
+                    </div>
+                </a>
+                
+                <!-- Card 4: Match Predictor -->
+                <a href="predict.html?tab=predict" class="glass-card rounded-2xl p-4 inner-glow hover:border-primary/40 transition-all flex flex-col justify-between group h-36 border border-white/5 relative overflow-hidden bg-white/5">
+                    <div class="absolute -right-4 -top-4 w-12 h-12 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-primary text-[24px] bg-primary/10 p-2 rounded-xl">insights</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[14px] group-hover:text-primary group-hover:translate-x-1 transition-all">arrow_forward</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white mb-1">Match Predictor</h4>
+                        <p class="text-[9px] text-on-surface-variant leading-tight">Run predictive model forecasts on tournament matchups.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
         <!-- Standings Table -->
         <section class="mb-8 relative">
             <div id="table-loader" class="hidden absolute inset-0 flex items-center justify-center bg-background/50 z-20 backdrop-blur-sm rounded-2xl">
@@ -261,6 +322,18 @@
                         <span class="font-label-caps text-[9px] text-on-surface-variant block mb-1">NATIONALITY & REGION</span>
                         <h4 id="modal-nation" class="font-bold text-[14px] text-on-surface truncate">-</h4>
                     </div>
+                </div>
+
+                <!-- Direct Navigation Actions -->
+                <div class="px-6 py-2 grid grid-cols-2 gap-3">
+                    <a id="modal-predict-btn" href="" class="py-2.5 bg-primary/20 hover:bg-primary/30 border border-primary/30 text-white rounded-xl text-center font-bold font-label-caps text-[10px] tracking-widest transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(0,102,255,0.1)]">
+                        <span class="material-symbols-outlined text-[14px]">insights</span>
+                        PREDICT MATCH
+                    </a>
+                    <a id="modal-compare-btn" href="" class="py-2.5 bg-secondary/20 hover:bg-secondary/30 border border-secondary/30 text-white rounded-xl text-center font-bold font-label-caps text-[10px] tracking-widest transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+                        <span class="material-symbols-outlined text-[14px]">compare_arrows</span>
+                        COMPARE STATS
+                    </a>
                 </div>
 
                 <!-- Tab Toggle inside Modal: Roster vs Tactical Board -->
@@ -872,26 +945,38 @@
 
                 card.innerHTML = `
                     <div class="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-[10px] font-label-caps text-primary border border-primary/30 px-2 py-0.5 rounded-full">${match.matchday.toUpperCase()}</span>
-                            <span class="text-[10px] font-label-caps text-on-surface-variant">${match.date.toUpperCase()}</span>
-                        </div>
-                        <div class="flex items-center justify-between gap-4">
-                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="${clickHome}">
-                                <img id="${homeImgId}" alt="${match.team1}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag1}"/>
-                                <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team1}</span>
+                    <div class="relative z-10 flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-[10px] font-label-caps text-primary border border-primary/30 px-2 py-0.5 rounded-full">${match.matchday.toUpperCase()}</span>
+                                <span class="text-[10px] font-label-caps text-on-surface-variant">${match.date.toUpperCase()}</span>
                             </div>
-                            <div class="flex flex-col items-center gap-1">
-                                <div class="font-stats-numeric text-[22px] text-white">
-                                    ${scoreText}
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="${clickHome}">
+                                    <img id="${homeImgId}" alt="${match.team1}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag1}"/>
+                                    <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team1}</span>
                                 </div>
-                                <div class="px-2 py-0.5 rounded bg-white/10 text-[9px] font-label-caps text-on-surface-variant text-center max-w-[120px] truncate">${match.venue}</div>
+                                <div class="flex flex-col items-center gap-1">
+                                    <div class="font-stats-numeric text-[22px] text-white">
+                                        ${scoreText}
+                                    </div>
+                                    <div class="px-2 py-0.5 rounded bg-white/10 text-[9px] font-label-caps text-on-surface-variant text-center max-w-[120px] truncate">${match.venue}</div>
+                                </div>
+                                <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="${clickAway}">
+                                    <img id="${awayImgId}" alt="${match.team2}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag2}"/>
+                                    <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team2}</span>
+                                </div>
                             </div>
-                            <div class="flex flex-col items-center gap-2 flex-1 cursor-pointer" onclick="${clickAway}">
-                                <img id="${awayImgId}" alt="${match.team2}" class="w-12 h-12 rounded-full border-2 border-white/10 shadow-lg object-cover bg-white/5 p-1" src="${flag2}"/>
-                                <span class="font-bold text-[14px] text-white text-center truncate w-full">${match.team2}</span>
-                            </div>
+                        </div>
+                        <div class="flex gap-2 pt-3 border-t border-white/5 mt-3">
+                            <a href="predict.html?tab=predict&home=${encodeURIComponent(match.team1)}&away=${encodeURIComponent(match.team2)}" class="flex-1 py-1.5 bg-white/5 hover:bg-primary/20 hover:text-white border border-white/10 rounded-xl text-center font-bold font-label-caps text-[9px] tracking-wider text-on-surface-variant transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">insights</span>
+                                PREDICT
+                            </a>
+                            <a href="predict.html?tab=live&home=${encodeURIComponent(match.team1)}&away=${encodeURIComponent(match.team2)}" class="flex-1 py-1.5 bg-white/5 hover:bg-secondary/20 hover:text-white border border-white/10 rounded-xl text-center font-bold font-label-caps text-[9px] tracking-wider text-on-surface-variant transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">sensors</span>
+                                LIVE SIM
+                            </a>
                         </div>
                     </div>
                 `;
@@ -931,6 +1016,16 @@
             }, 50);
 
             loader.classList.remove("hidden");
+
+            // Update modal prediction and comparison actions
+            const predictBtn = document.getElementById("modal-predict-btn");
+            const compareBtn = document.getElementById("modal-compare-btn");
+            if (predictBtn) {
+                predictBtn.href = `predict.html?tab=predict&home=${encodeURIComponent(teamName)}`;
+            }
+            if (compareBtn) {
+                compareBtn.href = `predict.html?tab=compare&home=${encodeURIComponent(teamName)}`;
+            }
 
             try {
                 if (currentSeason === "2026") {
