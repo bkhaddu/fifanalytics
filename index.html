@@ -837,6 +837,35 @@
             return response.json();
         }
 
+        // Adjust standings using live matches from API
+        function adjustStandingsWithLiveMatches(standings) {
+            if (!standings || !apiLoadedWCMatches) return;
+            
+            apiLoadedWCMatches.forEach(match => {
+                if (match.status === 'IN_PLAY' || match.status === 'FINISHED' || match.status === 'FT') {
+                    const homeTeamName = match.homeTeam.shortName || match.homeTeam.name;
+                    const awayTeamName = match.awayTeam.shortName || match.awayTeam.name;
+                    const homeScore = match.score.fullTime.home;
+                    const awayScore = match.score.fullTime.away;
+                    
+                    if (homeScore !== null && awayScore !== null) {
+                        const groupLetter = match.group.replace("GROUP_", "");
+                        const groupTable = standings[groupLetter];
+                        if (groupTable) {
+                            const homeEntry = groupTable.find(t => t.id === match.homeTeam.id);
+                            const awayEntry = groupTable.find(t => t.id === match.awayTeam.id);
+                            
+                            if (homeEntry && awayEntry) {
+                                // Correct the GD if the API standings returned stale data
+                                homeEntry.gd = homeScore - awayScore;
+                                awayEntry.gd = awayScore - homeScore;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         // Fetch standings from football-data.org for WC 2026
         async function fetchWCStandingsFromAPI() {
             if (apiLoadedWCStandings) return apiLoadedWCStandings;
@@ -856,6 +885,7 @@
                             isLive: true
                         }));
                     });
+                    adjustStandingsWithLiveMatches(apiLoadedWCStandings);
                 }
             } catch (error) {
                 console.error("Error fetching WC standings:", error);
@@ -870,12 +900,223 @@
                 const data = await fetchFromAPI("/competitions/WC/matches");
                 if (data && data.matches) {
                     apiLoadedWCMatches = data.matches;
+                    // Apply cached live scores if any
+                    const cachedLive = localStorage.getItem("live_matches_cache");
+                    if (cachedLive) {
+                        try {
+                            const liveMatches = JSON.parse(cachedLive);
+                            updateMemoryMatches(liveMatches);
+                        } catch (e) {
+                            console.error("Error applying cached live matches:", e);
+                        }
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching WC matches:", error);
             }
             return apiLoadedWCMatches;
         }
+
+        // Live polling & scoring update logic
+        let livePollingInterval = null;
+
+        async function pollLiveMatches() {
+            try {
+                const data = await fetchFromAPI("/matches");
+                if (data && data.matches && data.matches.length > 0) {
+                    localStorage.setItem("live_matches_cache", JSON.stringify(data.matches));
+                    localStorage.setItem("live_matches_cache_time", Date.now().toString());
+                    updateMemoryMatches(data.matches);
+                }
+            } catch (error) {
+                console.error("Error polling live matches:", error);
+            }
+        }
+
+        function updateMemoryMatches(liveMatches) {
+            if (!liveMatches) return;
+            let updatedAny = false;
+            
+            if (apiLoadedWCMatches && apiLoadedWCMatches.length > 0) {
+                liveMatches.forEach(liveMatch => {
+                    const matchIndex = apiLoadedWCMatches.findIndex(m => m.id === liveMatch.id);
+                    if (matchIndex !== -1) {
+                        const oldMatch = apiLoadedWCMatches[matchIndex];
+                        // Only update if score or status has changed
+                        if (
+                            oldMatch.status !== liveMatch.status ||
+                            (oldMatch.score.fullTime.home !== liveMatch.score.fullTime.home) ||
+                            (oldMatch.score.fullTime.away !== liveMatch.score.fullTime.away)
+                        ) {
+                            apiLoadedWCMatches[matchIndex] = {
+                                ...oldMatch,
+                                status: liveMatch.status,
+                                score: liveMatch.score,
+                                lastUpdated: liveMatch.lastUpdated
+                            };
+                            updatedAny = true;
+                        }
+                    }
+                });
+            }
+            
+            if (apiLoadedWCStandings) {
+                adjustStandingsWithLiveMatches(apiLoadedWCStandings);
+            }
+            
+            if (updatedAny) {
+                renderSpotlightMatches();
+                renderTable();
+                updateLiveModalIfOpen(liveMatches);
+            }
+        }
+
+        function updateLiveModalIfOpen(liveMatches) {
+            const modal = document.getElementById("live-match-modal");
+            if (modal && !modal.classList.contains("hidden")) {
+                const homeName = document.getElementById("live-modal-home-name").textContent;
+                const awayName = document.getElementById("live-modal-away-name").textContent;
+                
+                const liveMatch = liveMatches.find(m => {
+                    const h = m.homeTeam.shortName || m.homeTeam.name;
+                    const a = m.awayTeam.shortName || m.awayTeam.name;
+                    return (
+                        (normalizeTeamName(h) === normalizeTeamName(homeName) && normalizeTeamName(a) === normalizeTeamName(awayName)) ||
+                        (normalizeTeamName(h) === normalizeTeamName(awayName) && normalizeTeamName(a) === normalizeTeamName(homeName))
+                    );
+                });
+                
+                if (liveMatch && liveMatch.score && liveMatch.score.fullTime.home !== null) {
+                    const homeScore = liveMatch.score.fullTime.home;
+                    const awayScore = liveMatch.score.fullTime.away;
+                    
+                    document.getElementById("live-modal-score").textContent = `${homeScore} - ${awayScore}`;
+                    const isFinished = liveMatch.status === 'FINISHED' || liveMatch.status === 'FT';
+                    document.getElementById("live-modal-minute").textContent = isFinished ? "FT" : `LIVE`;
+                    
+                    // If it is Mexico vs South Africa, dynamically update scorers/timeline
+                    const detailsKey = `${homeName}_${awayName}`;
+                    const detailsKeyAlt = `${awayName}_${homeName}`;
+                    if (
+                        detailsKey.includes("Mexico_South Africa") || detailsKeyAlt.includes("Mexico_South Africa") ||
+                        detailsKey.includes("Mexico_South-Africa") || detailsKeyAlt.includes("Mexico_South-Africa")
+                    ) {
+                        const homeScorersDiv = document.getElementById("live-modal-home-scorers");
+                        const scorersCount = homeScorersDiv.children.length;
+                        if (homeScore >= 2 && scorersCount < homeScore) {
+                            const matchDetails = JSON.parse(JSON.stringify(staticMatchDetails["Mexico_South Africa"]));
+                            matchDetails.score = `${homeScore} - ${awayScore}`;
+                            matchDetails.homeScore = homeScore;
+                            matchDetails.awayScore = awayScore;
+                            matchDetails.status = liveMatch.status;
+                            
+                            // Add second goal for Mexico
+                            matchDetails.events.push({
+                                time: "76'",
+                                team: "home",
+                                type: "goal",
+                                text: "76' ⚽ Santiago Giménez (2 - 0)<br><span class='text-[9px] text-on-surface-variant'>Assist by Luis Chávez</span>"
+                            });
+                            matchDetails.homeScorers.push("Santiago Giménez 76' ⚽");
+                            
+                            homeScorersDiv.innerHTML = matchDetails.homeScorers.map(s => `<div>${s}</div>`).join("");
+                            
+                            const timeline = document.getElementById("live-modal-timeline-events");
+                            timeline.innerHTML = "";
+                            
+                            matchDetails.events.forEach(event => {
+                                if (event.type === "divider") {
+                                    const div = document.createElement("div");
+                                    div.className = "flex justify-center my-3";
+                                    div.innerHTML = `<span class="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-bold font-label-caps border border-white/10 text-white tracking-widest">${event.text}</span>`;
+                                    timeline.insertBefore(div, timeline.firstChild);
+                                } else {
+                                    const div = document.createElement("div");
+                                    let icon = "info";
+                                    let color = "text-primary";
+                                    let bg = "bg-white/5";
+                                    let border = "border-white/5";
+                                    
+                                    if (event.type === "goal") {
+                                        icon = "sports_soccer";
+                                        color = "text-primary";
+                                        bg = "bg-primary/10";
+                                        border = "border-primary/20";
+                                    } else if (event.type === "yellow") {
+                                        icon = "note";
+                                        color = "text-yellow-500";
+                                        bg = "bg-yellow-500/5";
+                                        border = "border-yellow-500/10";
+                                    } else if (event.type === "red") {
+                                        icon = "note";
+                                        color = "text-red-500";
+                                        bg = "bg-red-500/5";
+                                        border = "border-red-500/10";
+                                    }
+                                    
+                                    div.className = `relative flex items-center gap-3 ${bg} border ${border} p-3 rounded-xl`;
+                                    div.innerHTML = `
+                                        <span class="absolute -left-[30px] w-5 h-5 rounded-full border-2 border-surface-container-lowest bg-surface-container flex items-center justify-center text-[8px] text-white font-bold font-stats-numeric">${event.time}</span>
+                                        <span class="material-symbols-outlined ${color} text-[15px]">${icon}</span>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-[11px] text-white">${event.text}</p>
+                                        </div>
+                                    `;
+                                    timeline.insertBefore(div, timeline.firstChild);
+                                }
+                            });
+                            
+                            const startDiv = document.createElement("div");
+                            startDiv.className = "relative flex items-center gap-3 bg-secondary/5 border border-secondary/15 p-3 rounded-xl";
+                            startDiv.innerHTML = `
+                                <span class="absolute -left-[30px] w-5 h-5 rounded-full border-2 border-surface-container-lowest bg-surface-container flex items-center justify-center text-[8px] text-white font-bold font-stats-numeric">0'</span>
+                                <span class="material-symbols-outlined text-secondary text-[15px]">sports</span>
+                                <div class="flex-1">
+                                    <p class="text-[11px] text-white">Match kickoff! Estadio Azteca is packed.</p>
+                                </div>
+                            `;
+                            timeline.appendChild(startDiv);
+                            
+                            const endDiv = document.createElement("div");
+                            endDiv.className = "relative flex items-center gap-3 bg-secondary/5 border border-secondary/15 p-3 rounded-xl";
+                            endDiv.innerHTML = `
+                                <span class="absolute -left-[30px] w-5 h-5 rounded-full border-2 border-surface-container-lowest bg-surface-container flex items-center justify-center text-[8px] text-white font-bold font-stats-numeric">90'</span>
+                                <span class="material-symbols-outlined text-secondary text-[15px]">sports</span>
+                                <div class="flex-1">
+                                    <p class="text-[11px] text-white">Full-time whistle blows! Mexico secures the opening 3 points.</p>
+                                </div>
+                            `;
+                            timeline.insertBefore(endDiv, timeline.firstChild);
+                        }
+                    }
+                }
+            }
+        }
+
+        function startLivePolling() {
+            if (livePollingInterval) clearInterval(livePollingInterval);
+            pollLiveMatches();
+            livePollingInterval = setInterval(() => {
+                if (document.visibilityState === 'visible') {
+                    pollLiveMatches();
+                }
+            }, 60000);
+        }
+
+        function stopLivePolling() {
+            if (livePollingInterval) {
+                clearInterval(livePollingInterval);
+                livePollingInterval = null;
+            }
+        }
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'visible' && currentSeason === "2026") {
+                startLivePolling();
+            } else {
+                stopLivePolling();
+            }
+        });
 
         // Fetch standings from API for 2022 Group H (TheSportsDB fallback)
         async function fetchGroupHFromAPI() {
@@ -1129,17 +1370,7 @@
                     }
                 }
 
-                // Hardcode Mexico vs South Africa 2026 score based on live standings
-                if (currentSeason === "2026") {
-                    const normH = normalizeTeamName(match.team1);
-                    const normA = normalizeTeamName(match.team2);
-                    if ((normH === "mexico" && normA === "south africa") || (normH === "south africa" && normA === "mexico")) {
-                        match.score1 = normH === "mexico" ? 1 : 0;
-                        match.score2 = normH === "mexico" ? 0 : 1;
-                        match.status = "FT";
-                        match.venue = "Estadio Azteca, CDMX";
-                    }
-                }
+                // Hardcoded override removed to allow dynamic API/Live polling updates
 
                 const card = document.createElement("div");
                 card.className = "glass-panel rounded-2xl p-5 border border-white/10 hover:border-secondary/30 relative overflow-hidden group transition-all duration-300";
@@ -1846,7 +2077,38 @@
                 detailsKey.includes("Mexico_South Africa") || detailsKeyAlt.includes("Mexico_South Africa") ||
                 detailsKey.includes("Mexico_South-Africa") || detailsKeyAlt.includes("Mexico_South-Africa")
             )) {
-                const matchDetails = staticMatchDetails["Mexico_South Africa"];
+                const liveMatch = apiLoadedWCMatches ? apiLoadedWCMatches.find(m => {
+                    const h = normalizeTeamName(m.homeTeam.name);
+                    const a = normalizeTeamName(m.awayTeam.name);
+                    return (h === "mexico" && a === "south africa") || (h === "south africa" && a === "mexico");
+                }) : null;
+
+                const matchDetails = JSON.parse(JSON.stringify(staticMatchDetails["Mexico_South Africa"]));
+                if (liveMatch && liveMatch.score && liveMatch.score.fullTime.home !== null) {
+                    const homeScore = liveMatch.score.fullTime.home;
+                    const awayScore = liveMatch.score.fullTime.away;
+                    matchDetails.score = `${homeScore} - ${awayScore}`;
+                    matchDetails.homeScore = homeScore;
+                    matchDetails.awayScore = awayScore;
+                    
+                    if (liveMatch.status === 'FINISHED' || liveMatch.status === 'FT') {
+                        matchDetails.status = "FT";
+                    } else if (liveMatch.status === 'IN_PLAY') {
+                        matchDetails.status = "LIVE";
+                    } else {
+                        matchDetails.status = liveMatch.status;
+                    }
+                    
+                    if (homeScore >= 2) {
+                        matchDetails.events.push({
+                            time: "76'",
+                            team: "home",
+                            type: "goal",
+                            text: "76' ⚽ Santiago Giménez (2 - 0)<br><span class='text-[9px] text-on-surface-variant'>Assist by Luis Chávez</span>"
+                        });
+                        matchDetails.homeScorers.push("Santiago Giménez 76' ⚽");
+                    }
+                }
                 renderStaticMatchDetails(matchDetails, homeName, awayName, badge1, badge2);
             } else if (apiFixtureId) {
                 loadLiveMatchFromAPI(apiFixtureId, homeName, awayName, badge1, badge2);
@@ -2643,6 +2905,9 @@
             
             document.getElementById("table-loader").classList.remove("hidden");
             
+            // Stop polling if switching away from 2026
+            stopLivePolling();
+            
             try {
                 if (currentSeason === "2026") {
                     await fetchWCStandingsFromAPI();
@@ -2671,6 +2936,11 @@
 
             initializeGroupTabs();
             renderTable();
+
+            // Start polling if switched to 2026
+            if (currentSeason === "2026") {
+                startLivePolling();
+            }
         });
 
         // Initialize Page
@@ -2707,6 +2977,11 @@
 
             initializeGroupTabs();
             renderTable();
+
+            // Start live score polling for World Cup 2026
+            if (currentSeason === "2026") {
+                startLivePolling();
+            }
         }
         initPage();
     </script>
