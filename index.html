@@ -483,6 +483,54 @@
             "South Korea": { id: "134517", badge: "https://r2.thesportsdb.com/images/media/team/badge/ffsyxz1591989843.png/tiny" }
         };
 
+        const apiFootballTeamIds = {
+            "Belgium": 1, "France": 2, "Croatia": 3, "Brazil": 6, "Uruguay": 7,
+            "Spain": 9, "England": 10, "Japan": 12, "Senegal": 13, "Serbia": 14,
+            "Switzerland": 15, "Mexico": 16, "South Korea": 17, "Australia": 20,
+            "Denmark": 21, "Iran": 22, "Saudi Arabia": 23, "Poland": 24, "Germany": 25,
+            "Argentina": 26, "Portugal": 27, "Tunisia": 28, "Costa Rica": 29, "Morocco": 31,
+            "Wales": 767, "Netherlands": 1118, "Ghana": 1504, "Cameroon": 1530, "Qatar": 1569,
+            "Ecuador": 2382, "USA": 2384, "Canada": 5529
+        };
+
+        async function fetchSquadFromAPIFootball(teamName) {
+            const cached = localStorage.getItem("api_football_squad_" + teamName);
+            if (cached) {
+                try {
+                    return JSON.parse(cached);
+                } catch (e) {
+                    console.error("Error parsing cached API-Football squad", e);
+                }
+            }
+
+            const teamId = apiFootballTeamIds[teamName];
+            if (!teamId) return null;
+
+            try {
+                const response = await fetch(`https://v3.football.api-sports.io/players/squads?team=${teamId}`, {
+                    method: 'GET',
+                    headers: {
+                        'x-apisports-key': '366fbc514c64e808427ad777e1f371a5'
+                    }
+                });
+                const data = await response.json();
+                if (data && data.response && data.response.length > 0 && data.response[0].players) {
+                    const players = data.response[0].players.map(p => ({
+                        name: p.name,
+                        position: p.position || "Squad Player",
+                        shirtNumber: p.number || null,
+                        photo: p.photo || null,
+                        age: p.age || null
+                    }));
+                    localStorage.setItem("api_football_squad_" + teamName, JSON.stringify(players));
+                    return players;
+                }
+            } catch (error) {
+                console.error("Error fetching squad from API-Football:", error);
+            }
+            return null;
+        }
+
         const historicalStandings = {
             "2026": {
                 "A": [
@@ -1025,6 +1073,53 @@
             }
             if (compareBtn) {
                 compareBtn.href = `predict.html?tab=compare&home=${encodeURIComponent(teamName)}`;
+            }
+
+            try {
+                // Try API-Football first for squad details
+                const apiFootballPlayers = await fetchSquadFromAPIFootball(teamName);
+                if (apiFootballPlayers && apiFootballPlayers.length > 0) {
+                    document.getElementById("modal-team-name").textContent = teamName;
+                    document.getElementById("modal-formed-year").textContent = `API-FOOTBALL VERIFIED`;
+                    
+                    let dbInfo = teamDatabase[teamName] || {};
+                    document.getElementById("modal-badge").src = dbInfo.badge || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+                    document.getElementById("modal-banner").src = dbInfo.banner || dbInfo.stadiumThumb || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop";
+                    document.getElementById("modal-stadium").textContent = dbInfo.stadium || "Not Listed";
+                    document.getElementById("modal-nation").textContent = teamName;
+
+                    const squadContainer = document.getElementById("modal-squad-grid");
+                    squadContainer.innerHTML = "";
+
+                    apiFootballPlayers.forEach(player => {
+                        const card = document.createElement("div");
+                        card.className = "flex items-center gap-3 bg-white/5 rounded-xl p-3 border border-white/5 hover:border-primary/20 transition-all";
+                        
+                        card.innerHTML = `
+                            <div class="w-10 h-10 rounded-full overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
+                                ${player.photo ? `<img src="${player.photo}" class="w-full h-full object-cover" onerror="this.outerHTML='<span class=\'material-symbols-outlined text-on-surface-variant text-[20px]\'>person</span>'"/>` : `<span class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>`}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-[13px] text-white truncate">${player.name}</h5>
+                                <p class="text-[10px] text-on-surface-variant truncate">${player.position || "Squad"}${player.age ? `, Age ${player.age}` : ''}</p>
+                            </div>
+                        `;
+                        squadContainer.appendChild(card);
+                    });
+
+                    renderTacticalBoard(apiFootballPlayers.map(p => ({
+                        name: p.name,
+                        position: p.position || "Squad Player",
+                        number: p.shirtNumber || null,
+                        avatar: p.photo || null,
+                        club: ""
+                    })));
+
+                    loader.classList.add("hidden");
+                    return;
+                }
+            } catch (e) {
+                console.error("API-Football squad load failed, falling back", e);
             }
 
             try {

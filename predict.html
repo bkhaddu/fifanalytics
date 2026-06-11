@@ -442,17 +442,35 @@
                     Compare Players
                 </h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="flex flex-col gap-1">
-                        <label class="font-label-caps text-[9px] text-on-surface-variant">PLAYER A (BLUE)</label>
-                        <select id="compare-player-a" onchange="updateComparison()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2.5 text-white outline-none focus:border-primary cursor-pointer animate-none">
-                            <!-- Populated dynamically -->
-                        </select>
+                    <!-- Column A -->
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">TEAM A</label>
+                            <select id="compare-team-a" onchange="onCompareTeamChange('A')" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary cursor-pointer w-full">
+                                <!-- Populated dynamically with teams -->
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">PLAYER A (BLUE)</label>
+                            <select id="compare-player-a" onchange="updateComparison()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2.5 text-white outline-none focus:border-primary cursor-pointer w-full">
+                                <!-- Populated dynamically with players of Team A -->
+                            </select>
+                        </div>
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <label class="font-label-caps text-[9px] text-on-surface-variant">PLAYER B (RED)</label>
-                        <select id="compare-player-b" onchange="updateComparison()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2.5 text-white outline-none focus:border-primary cursor-pointer animate-none">
-                            <!-- Populated dynamically -->
-                        </select>
+                    <!-- Column B -->
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">TEAM B</label>
+                            <select id="compare-team-b" onchange="onCompareTeamChange('B')" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2 text-white outline-none focus:border-primary cursor-pointer w-full">
+                                <!-- Populated dynamically with teams -->
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-caps text-[9px] text-on-surface-variant">PLAYER B (RED)</label>
+                            <select id="compare-player-b" onchange="updateComparison()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2.5 text-white outline-none focus:border-primary cursor-pointer w-full">
+                                <!-- Populated dynamically with players of Team B -->
+                            </select>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1362,31 +1380,191 @@
         }
 
         // ==================== PLAYER COMPARISON LOGIC ====================
-        const playersDatabase = [
-            { name: "Lionel Messi", nation: "Argentina", position: "Forward", age: 38, club: "Inter Miami", goals: 843, assists: 372, stats: { attack: 95, defending: 35, passing: 94, physicality: 78 } },
-            { name: "Kylian Mbappé", nation: "France", position: "Forward", age: 27, club: "Real Madrid", goals: 332, assists: 125, stats: { attack: 96, defending: 30, passing: 84, physicality: 89 } },
-            { name: "Erling Haaland", nation: "Norway", position: "Forward", age: 25, club: "Manchester City", goals: 260, assists: 48, stats: { attack: 97, defending: 28, passing: 72, physicality: 93 } },
-            { name: "Kevin De Bruyne", nation: "Belgium", position: "Midfielder", age: 34, club: "Manchester City", goals: 148, assists: 256, stats: { attack: 82, defending: 62, passing: 97, physicality: 80 } },
-            { name: "Jude Bellingham", nation: "England", position: "Midfielder", age: 22, club: "Real Madrid", goals: 58, assists: 44, stats: { attack: 88, defending: 76, passing: 88, physicality: 86 } },
-            { name: "Vinícius Júnior", nation: "Brazil", position: "Forward", age: 25, club: "Real Madrid", goals: 96, assists: 75, stats: { attack: 93, defending: 32, passing: 82, physicality: 84 } },
-            { name: "Luka Modrić", nation: "Croatia", position: "Midfielder", age: 40, club: "Real Madrid", goals: 92, assists: 160, stats: { attack: 76, defending: 68, passing: 94, physicality: 72 } },
-            { name: "Jamal Musiala", nation: "Germany", position: "Midfielder", age: 23, club: "Bayern Munich", goals: 46, assists: 38, stats: { attack: 86, defending: 45, passing: 89, physicality: 76 } },
-            { name: "Bukayo Saka", nation: "England", position: "Forward", age: 24, club: "Arsenal", goals: 74, assists: 62, stats: { attack: 89, defending: 48, passing: 85, physicality: 80 } },
-            { name: "Antoine Griezmann", nation: "France", position: "Forward", age: 35, club: "Atlético Madrid", goals: 268, assists: 120, stats: { attack: 85, defending: 65, passing: 88, physicality: 78 } }
-        ];
+        // Global variables for loaded squads in comparison
+        let activeSquadA = [];
+        let activeSquadB = [];
 
-        function populateComparisonDropdowns() {
-            const selectA = document.getElementById("compare-player-a");
-            const selectB = document.getElementById("compare-player-b");
-            if (!selectA || !selectB) return;
+        const apiFootballTeamIds = {
+            "Belgium": 1, "France": 2, "Croatia": 3, "Brazil": 6, "Uruguay": 7,
+            "Spain": 9, "England": 10, "Japan": 12, "Senegal": 13, "Serbia": 14,
+            "Switzerland": 15, "Mexico": 16, "South Korea": 17, "Australia": 20,
+            "Denmark": 21, "Iran": 22, "Saudi Arabia": 23, "Poland": 24, "Germany": 25,
+            "Argentina": 26, "Portugal": 27, "Tunisia": 28, "Costa Rica": 29, "Morocco": 31,
+            "Wales": 767, "Netherlands": 1118, "Ghana": 1504, "Cameroon": 1530, "Qatar": 1569,
+            "Ecuador": 2382, "USA": 2384, "Canada": 5529
+        };
+
+        async function fetchSquadFromAPIFootball(teamName) {
+            const cached = localStorage.getItem("api_football_squad_" + teamName);
+            if (cached) {
+                try {
+                    return JSON.parse(cached);
+                } catch (e) {
+                    console.error("Error parsing cached API-Football squad", e);
+                }
+            }
+
+            const teamId = apiFootballTeamIds[teamName];
+            if (!teamId) return null;
+
+            try {
+                const response = await fetch(`https://v3.football.api-sports.io/players/squads?team=${teamId}`, {
+                    method: 'GET',
+                    headers: {
+                        'x-apisports-key': '366fbc514c64e808427ad777e1f371a5'
+                    }
+                });
+                const data = await response.json();
+                if (data && data.response && data.response.length > 0 && data.response[0].players) {
+                    const players = data.response[0].players.map(p => ({
+                        name: p.name,
+                        position: p.position || "Squad Player",
+                        shirtNumber: p.number || null,
+                        photo: p.photo || null,
+                        age: p.age || null
+                    }));
+                    localStorage.setItem("api_football_squad_" + teamName, JSON.stringify(players));
+                    return players;
+                }
+            } catch (error) {
+                console.error("Error fetching squad from API-Football:", error);
+            }
+            return null;
+        }
+
+        async function getSquadForTeam(teamName) {
+            const apiPlayers = await fetchSquadFromAPIFootball(teamName);
+            if (apiPlayers && apiPlayers.length > 0) {
+                return apiPlayers;
+            }
+
+            const list = [];
+            const popular = popularPlayers[teamName];
+            if (popular) {
+                let idx = 1;
+                ["D", "M", "F"].forEach(group => {
+                    popular[group].forEach(name => {
+                        list.push({
+                            name: name,
+                            position: group === "F" ? "Attacker" : group === "M" ? "Midfielder" : "Defender",
+                            shirtNumber: idx++,
+                            photo: null,
+                            age: 20 + Math.abs(name.charCodeAt(0) % 15)
+                        });
+                    });
+                });
+            }
+
+            if (list.length === 0) {
+                const positions = ["Goalkeeper", "Defender", "Defender", "Defender", "Defender", "Midfielder", "Midfielder", "Midfielder", "Attacker", "Attacker", "Attacker"];
+                positions.forEach((pos, i) => {
+                    list.push({
+                        name: `${teamName} Player ${i + 1}`,
+                        position: pos,
+                        shirtNumber: i + 1,
+                        photo: null,
+                        age: 22 + (i % 8)
+                    });
+                });
+            }
+            return list;
+        }
+
+        function getDeterministicStats(playerName, position) {
+            let hash = 0;
+            for (let i = 0; i < playerName.length; i++) {
+                hash = playerName.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const absHash = Math.abs(hash);
             
-            selectA.innerHTML = "";
-            selectB.innerHTML = "";
+            const isGK = position.toLowerCase().includes("gk") || position.toLowerCase().includes("goalkeeper");
+            const isDEF = position.toLowerCase().includes("def") || position.toLowerCase().includes("back") || position.toLowerCase().includes("cb") || position.toLowerCase().includes("lb") || position.toLowerCase().includes("rb");
+            const isMID = position.toLowerCase().includes("mid") || position.toLowerCase().includes("cm") || position.toLowerCase().includes("dm") || position.toLowerCase().includes("am");
             
-            playersDatabase.forEach((p, idx) => {
-                selectA.innerHTML += `<option value="${idx}" ${idx === 0 ? 'selected' : ''}>${p.name} (${p.nation})</option>`;
-                selectB.innerHTML += `<option value="${idx}" ${idx === 1 ? 'selected' : ''}>${p.name} (${p.nation})</option>`;
+            const attBase = isGK ? 10 : isDEF ? 35 : isMID ? 70 : 85;
+            const defBase = isGK ? 85 : isDEF ? 88 : isMID ? 60 : 30;
+            const pasBase = isGK ? 55 : isDEF ? 68 : isMID ? 86 : 75;
+            const phyBase = isGK ? 78 : isDEF ? 82 : isMID ? 76 : 78;
+
+            return {
+                attack: attBase + (absHash % 12),
+                defending: defBase + ((absHash >> 2) % 10),
+                passing: pasBase + ((absHash >> 4) % 12),
+                physicality: phyBase + ((absHash >> 6) % 12),
+                goals: isGK ? 0 : (isDEF ? (absHash % 2) : isMID ? (absHash % 3) : (absHash % 6) + 1),
+                assists: isGK ? 0 : (isDEF ? (absHash % 3) : isMID ? (absHash % 5) + 1 : (absHash % 4))
+            };
+        }
+
+        async function populateComparisonDropdowns() {
+            const teamASelect = document.getElementById("compare-team-a");
+            const teamBSelect = document.getElementById("compare-team-b");
+            if (!teamASelect || !teamBSelect) return;
+
+            teamASelect.innerHTML = "";
+            teamBSelect.innerHTML = "";
+
+            const teams = Object.keys(teamStats).sort();
+            teams.forEach(team => {
+                const opt1 = document.createElement("option");
+                opt1.value = team;
+                opt1.textContent = team;
+                teamASelect.appendChild(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = team;
+                opt2.textContent = team;
+                teamBSelect.appendChild(opt2);
             });
+
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const homeParam = urlParams.get('home');
+            const awayParam = urlParams.get('away');
+
+            if (homeParam && teams.includes(homeParam)) {
+                teamASelect.value = homeParam;
+            } else {
+                teamASelect.value = "Argentina";
+            }
+
+            if (awayParam && teams.includes(awayParam)) {
+                teamBSelect.value = awayParam;
+            } else {
+                teamBSelect.value = "France";
+            }
+
+            // Trigger initial squad loads
+            await Promise.all([
+                onCompareTeamChange('A'),
+                onCompareTeamChange('B')
+            ]);
+        }
+
+        async function onCompareTeamChange(side) {
+            const teamSelect = document.getElementById(`compare-team-${side.toLowerCase()}`);
+            const playerSelect = document.getElementById(`compare-player-${side.toLowerCase()}`);
+            if (!teamSelect || !playerSelect) return;
+
+            const teamName = teamSelect.value;
+            playerSelect.innerHTML = "<option disabled>Loading...</option>";
+
+            const squad = await getSquadForTeam(teamName);
+            if (side === 'A') {
+                activeSquadA = squad;
+            } else {
+                activeSquadB = squad;
+            }
+
+            playerSelect.innerHTML = "";
+            squad.forEach((p, idx) => {
+                const opt = document.createElement("option");
+                opt.value = idx;
+                opt.textContent = `${p.name} (${p.position})`;
+                if (idx === 0) opt.selected = true;
+                playerSelect.appendChild(opt);
+            });
+
             updateComparison();
         }
 
@@ -1465,21 +1643,56 @@
         }
 
         function updateComparison() {
-            const idxA = parseInt(document.getElementById("compare-player-a").value);
-            const idxB = parseInt(document.getElementById("compare-player-b").value);
+            const selectA = document.getElementById("compare-player-a");
+            const selectB = document.getElementById("compare-player-b");
+            if (!selectA || !selectB) return;
             
-            const p1 = playersDatabase[idxA];
-            const p2 = playersDatabase[idxB];
-            
-            document.getElementById("compare-legend-a").textContent = p1.name.toUpperCase();
-            document.getElementById("compare-legend-b").textContent = p2.name.toUpperCase();
-            
+            const playerA = activeSquadA[parseInt(selectA.value)];
+            const playerB = activeSquadB[parseInt(selectB.value)];
+            if (!playerA || !playerB) return;
+
+            const statsA = getDeterministicStats(playerA.name, playerA.position);
+            const statsB = getDeterministicStats(playerB.name, playerB.position);
+
+            const p1 = {
+                name: playerA.name,
+                nation: document.getElementById("compare-team-a").value,
+                position: playerA.position,
+                age: playerA.age || 25,
+                club: playerA.club || "National Team",
+                goals: statsA.goals,
+                assists: statsA.assists,
+                photo: playerA.photo,
+                stats: statsA
+            };
+
+            const p2 = {
+                name: playerB.name,
+                nation: document.getElementById("compare-team-b").value,
+                position: playerB.position,
+                age: playerB.age || 25,
+                club: playerB.club || "National Team",
+                goals: statsB.goals,
+                assists: statsB.assists,
+                photo: playerB.photo,
+                stats: statsB
+            };
+
+            document.getElementById("compare-legend-a").textContent = p1.name;
+            document.getElementById("compare-legend-b").textContent = p2.name;
+
             const statsList = document.getElementById("compare-stats-list");
             statsList.innerHTML = `
                 <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
-                    <span class="font-stats-numeric text-primary text-sm">${p1.age} yrs</span>
+                    <span class="font-stats-numeric text-primary text-sm flex items-center gap-1.5">
+                        ${p1.photo ? `<img src="${p1.photo}" class="w-6 h-6 rounded-full object-cover bg-white/5 border border-white/10" onerror="this.remove()"/>` : ''}
+                        ${p1.age} yrs
+                    </span>
                     <span class="font-label-caps text-on-surface-variant text-[9px]">AGE</span>
-                    <span class="font-stats-numeric text-secondary text-sm text-right">${p2.age} yrs</span>
+                    <span class="font-stats-numeric text-secondary text-sm text-right flex items-center gap-1.5 justify-end">
+                        ${p2.age} yrs
+                        ${p2.photo ? `<img src="${p2.photo}" class="w-6 h-6 rounded-full object-cover bg-white/5 border border-white/10" onerror="this.remove()"/>` : ''}
+                    </span>
                 </div>
                 <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
                     <span class="font-bold text-white truncate max-w-[120px]">${p1.club}</span>
@@ -1685,16 +1898,42 @@
             });
         }
 
-        function runLiveMatchSimulation() {
+        async function runLiveMatchSimulation() {
             liveSimMinute = 0;
             liveHomeScore = 0;
             liveAwayScore = 0;
             heatmapPoints = [];
             
+            const homeName = document.getElementById("live-home-select").value;
+            const awayName = document.getElementById("live-away-select").value;
+
             document.getElementById("live-match-score").textContent = "0 - 0";
             document.getElementById("live-match-minute").textContent = "LIVE (0')";
             
             const timeline = document.getElementById("live-timeline-events");
+            timeline.innerHTML = `<p class="text-center text-on-surface-variant text-[11px] font-label-caps py-12">Loading team squads...</p>`;
+
+            // Fetch actual squads (cached in localStorage)
+            const [homeSquad, awaySquad] = await Promise.all([
+                getSquadForTeam(homeName),
+                getSquadForTeam(awayName)
+            ]);
+
+            // Helper to select player from actual rosters
+            function getLiveSquadPlayer(squad, group) {
+                if (!squad || squad.length === 0) return "Squad Player";
+                let filtered = [];
+                if (group === "F") {
+                    filtered = squad.filter(p => p.position.toLowerCase().includes("att") || p.position.toLowerCase().includes("forward") || p.position.toLowerCase().includes("striker") || p.position.toLowerCase().includes("wing"));
+                } else if (group === "M") {
+                    filtered = squad.filter(p => p.position.toLowerCase().includes("mid") || p.position.toLowerCase().includes("cm") || p.position.toLowerCase().includes("dm") || p.position.toLowerCase().includes("am"));
+                } else {
+                    filtered = squad.filter(p => p.position.toLowerCase().includes("def") || p.position.toLowerCase().includes("back") || p.position.toLowerCase().includes("gk"));
+                }
+                if (filtered.length === 0) filtered = squad;
+                return filtered[Math.floor(Math.random() * filtered.length)].name;
+            }
+
             timeline.innerHTML = `
                 <div class="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
                     <span class="material-symbols-outlined text-primary text-[16px]">info</span>
@@ -1733,20 +1972,17 @@
                 }
                 drawHeatmap();
 
-                const homeName = document.getElementById("live-home-select").value;
-                const awayName = document.getElementById("live-away-select").value;
-
                 const rand = Math.random();
                 if (rand < 0.18) {
                     const isHome = Math.random() < 0.55;
                     let scorer = "";
                     if (isHome) {
                         liveHomeScore++;
-                        scorer = getTeamPlayer(homeName, "F");
+                        scorer = getLiveSquadPlayer(homeSquad, "F");
                         heatmapPoints.push({ x: 85, y: 50, isHome: true, radius: 45, intensity: 0.85 });
                     } else {
                         liveAwayScore++;
-                        scorer = getTeamPlayer(awayName, "F");
+                        scorer = getLiveSquadPlayer(awaySquad, "F");
                         heatmapPoints.push({ x: 15, y: 50, isHome: false, radius: 45, intensity: 0.85 });
                     }
                     document.getElementById("live-match-score").textContent = `${liveHomeScore} - ${liveAwayScore}`;
@@ -1764,7 +2000,7 @@
 
                 } else if (rand < 0.38) {
                     const isHome = Math.random() < 0.5;
-                    const player = isHome ? getTeamPlayer(homeName, "M") : getTeamPlayer(awayName, "D");
+                    const player = isHome ? getLiveSquadPlayer(homeSquad, "M") : getLiveSquadPlayer(awaySquad, "D");
                     
                     timeline.innerHTML = `
                         <div class="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
