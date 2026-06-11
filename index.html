@@ -263,14 +263,89 @@
                     </div>
                 </div>
 
-                <!-- Squad List Section -->
-                <div class="px-6 py-4">
-                    <h4 class="font-headline-md text-[18px] text-white mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary text-[20px]">groups</span>
-                        Roster & Staff
-                    </h4>
+                <!-- Tab Toggle inside Modal: Roster vs Tactical Board -->
+                <div class="px-6 py-2 flex gap-4 border-b border-white/5 mb-4">
+                    <button id="modal-tab-roster" onclick="switchModalTab('roster')" class="pb-2 text-xs font-bold font-label-caps tracking-widest border-b-2 border-primary text-white transition-all">
+                        ROSTER LIST
+                    </button>
+                    <button id="modal-tab-tactical" onclick="switchModalTab('tactical')" class="pb-2 text-xs font-bold font-label-caps tracking-widest border-b-2 border-transparent text-on-surface-variant hover:text-white transition-all">
+                        TACTICAL BOARD
+                    </button>
+                </div>
+
+                <!-- Squad List View -->
+                <div id="modal-roster-view" class="px-6 py-2">
                     <div id="modal-squad-grid" class="grid grid-cols-2 gap-3">
                         <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <!-- Tactical Board View -->
+                <div id="modal-tactical-view" class="px-6 py-2 hidden">
+                    <div class="relative w-full aspect-[4/3] rounded-2xl border border-white/10 overflow-hidden bg-[#0a1c12] flex flex-col justify-between p-4 shadow-xl">
+                        <!-- Tactical Pitch background and lines -->
+                        <div class="absolute inset-0 pointer-events-none opacity-30 flex flex-col justify-between p-2">
+                            <!-- Field Boundary & Center Line -->
+                            <div class="border border-white w-full h-full rounded-lg relative flex items-center justify-center">
+                                <div class="absolute w-full h-[1px] bg-white top-1/2 -translate-y-1/2"></div>
+                                <div class="absolute w-20 h-20 rounded-full border border-white"></div>
+                                <div class="absolute w-2 h-2 rounded-full bg-white"></div>
+                                <!-- Penalty Areas -->
+                                <div class="absolute top-0 w-36 h-12 border-b border-x border-white left-1/2 -translate-x-1/2"></div>
+                                <div class="absolute bottom-0 w-36 h-12 border-t border-x border-white left-1/2 -translate-x-1/2"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Player Nodes Overlay -->
+                        <div class="relative w-full h-full" id="tactical-field-nodes">
+                            <!-- Nodes loaded dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Player Detail Card (Popup below pitch) -->
+                    <div id="modal-pitch-player-detail" class="mt-4 p-4 rounded-2xl bg-white/5 border border-white/10 hidden backdrop-blur-md">
+                        <div class="flex items-center gap-4">
+                            <div id="pitch-detail-avatar-container" class="w-10 h-10 rounded-full overflow-hidden bg-white/10 border border-white/20 flex-shrink-0 flex items-center justify-center">
+                                <img id="pitch-detail-avatar" class="w-full h-full object-cover hidden" src="" alt="Player Avatar" onload="this.classList.remove('hidden')"/>
+                                <span id="pitch-detail-avatar-fallback" class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <h5 id="pitch-detail-name" class="font-bold text-white text-[14px] truncate">-</h5>
+                                    <span id="pitch-detail-number" class="font-stats-numeric text-primary text-[15px]">-</span>
+                                </div>
+                                <p id="pitch-detail-position" class="text-[10px] text-on-surface-variant uppercase font-bold">-</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats Grid inside detailing -->
+                        <div class="grid grid-cols-3 gap-2 mt-3 text-center">
+                            <div class="bg-white/5 p-2 rounded-xl border border-white/5">
+                                <span class="font-label-caps text-[8px] text-on-surface-variant block">GOALS</span>
+                                <span id="pitch-detail-goals" class="font-stats-numeric text-white text-[13px]">-</span>
+                            </div>
+                            <div class="bg-white/5 p-2 rounded-xl border border-white/5">
+                                <span class="font-label-caps text-[8px] text-on-surface-variant block">ASSISTS</span>
+                                <span id="pitch-detail-assists" class="font-stats-numeric text-white text-[13px]">-</span>
+                            </div>
+                            <div class="bg-white/5 p-2 rounded-xl border border-white/5">
+                                <span class="font-label-caps text-[8px] text-on-surface-variant block">CLUB</span>
+                                <span id="pitch-detail-club" class="text-[10px] text-on-surface truncate block font-bold mt-0.5">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini Radar SVG chart inside detailing -->
+                        <div class="mt-4 flex items-center justify-between bg-black/20 p-3 rounded-xl border border-white/5">
+                            <div class="w-20 h-20 relative flex items-center justify-center" id="pitch-detail-radar-chart">
+                                <!-- SVG radar dynamic -->
+                            </div>
+                            <div class="flex-1 ml-4 text-[10px] text-on-surface-variant space-y-1">
+                                <div class="flex justify-between"><span>Attacking:</span><span id="radar-lbl-att" class="text-white font-bold">-</span></div>
+                                <div class="flex justify-between"><span>Defending:</span><span id="radar-lbl-def" class="text-white font-bold">-</span></div>
+                                <div class="flex justify-between"><span>Passing:</span><span id="radar-lbl-pas" class="text-white font-bold">-</span></div>
+                                <div class="flex justify-between"><span>Physicality:</span><span id="radar-lbl-phy" class="text-white font-bold">-</span></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -916,6 +991,13 @@
                                 squadContainer.appendChild(card);
                             });
                         }
+                        renderTacticalBoard(squad.map(p => ({
+                            name: p.name,
+                            position: p.position || "Squad Player",
+                            number: p.shirtNumber || null,
+                            avatar: null,
+                            club: p.club || team.name
+                        })));
                     }
                     return;
                 }
@@ -985,12 +1067,237 @@
                             squadContainer.appendChild(card);
                         });
                     }
+                    renderTacticalBoard(players.map(p => ({
+                        name: p.strPlayer,
+                        position: p.strPosition || "Squad Player",
+                        number: p.strNumber || null,
+                        avatar: p.strCutout || p.strThumb || null,
+                        club: p.strClub || team.strTeam
+                    })));
                 }
             } catch (error) {
                 console.error("Error loading team details:", error);
             } finally {
                 loader.classList.add("hidden");
             }
+        }
+
+        function switchModalTab(tab) {
+            const rosterBtn = document.getElementById("modal-tab-roster");
+            const tacticalBtn = document.getElementById("modal-tab-tactical");
+            const rosterView = document.getElementById("modal-roster-view");
+            const tacticalView = document.getElementById("modal-tactical-view");
+
+            if (tab === 'roster') {
+                rosterBtn.classList.add("border-primary", "text-white");
+                rosterBtn.classList.remove("border-transparent", "text-on-surface-variant");
+                tacticalBtn.classList.add("border-transparent", "text-on-surface-variant");
+                tacticalBtn.classList.remove("border-primary", "text-white");
+                rosterView.classList.remove("hidden");
+                tacticalView.classList.add("hidden");
+            } else {
+                tacticalBtn.classList.add("border-primary", "text-white");
+                tacticalBtn.classList.remove("border-transparent", "text-on-surface-variant");
+                rosterBtn.classList.add("border-transparent", "text-on-surface-variant");
+                rosterBtn.classList.remove("border-primary", "text-white");
+                rosterView.classList.add("hidden");
+                tacticalView.classList.remove("hidden");
+            }
+        }
+
+        function getDeterministicStats(playerName, position) {
+            let hash = 0;
+            for (let i = 0; i < playerName.length; i++) {
+                hash = playerName.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const absHash = Math.abs(hash);
+            
+            const isGK = position.toLowerCase().includes("gk") || position.toLowerCase().includes("goalkeeper");
+            const isDEF = position.toLowerCase().includes("def") || position.toLowerCase().includes("back") || position.toLowerCase().includes("cb") || position.toLowerCase().includes("lb") || position.toLowerCase().includes("rb");
+            const isMID = position.toLowerCase().includes("mid") || position.toLowerCase().includes("cm") || position.toLowerCase().includes("dm") || position.toLowerCase().includes("am");
+            
+            const attBase = isGK ? 10 : isDEF ? 35 : isMID ? 70 : 85;
+            const defBase = isGK ? 85 : isDEF ? 88 : isMID ? 60 : 30;
+            const pasBase = isGK ? 55 : isDEF ? 68 : isMID ? 86 : 75;
+            const phyBase = isGK ? 78 : isDEF ? 82 : isMID ? 76 : 78;
+
+            return {
+                attack: attBase + (absHash % 12),
+                defending: defBase + ((absHash >> 2) % 10),
+                passing: pasBase + ((absHash >> 4) % 12),
+                physicality: phyBase + ((absHash >> 6) % 12),
+                goals: isGK ? 0 : (isDEF ? (absHash % 2) : isMID ? (absHash % 3) : (absHash % 6) + 1),
+                assists: isGK ? 0 : (isDEF ? (absHash % 3) : isMID ? (absHash % 5) + 1 : (absHash % 4))
+            };
+        }
+
+        function drawPlayerRadar(canvasId, stats) {
+            const container = document.getElementById(canvasId);
+            container.innerHTML = "";
+            
+            const size = 80;
+            const center = size / 2;
+            const maxRadius = size * 0.4;
+            
+            const values = [stats.attack, stats.defending, stats.passing, stats.physicality];
+            const angles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+            
+            let points = [];
+            for (let i = 0; i < 4; i++) {
+                const radius = (values[i] / 100) * maxRadius;
+                const x = center + radius * Math.cos(angles[i] - Math.PI / 2);
+                const y = center + radius * Math.sin(angles[i] - Math.PI / 2);
+                points.push(`${x},${y}`);
+            }
+            const pointsStr = points.join(" ");
+
+            let backgroundGuides = "";
+            for (let r = 0.25; r <= 1.0; r += 0.25) {
+                const rad = r * maxRadius;
+                let bgPoints = [];
+                for (let i = 0; i < 4; i++) {
+                    const x = center + rad * Math.cos(angles[i] - Math.PI / 2);
+                    const y = center + rad * Math.sin(angles[i] - Math.PI / 2);
+                    bgPoints.push(`${x},${y}`);
+                }
+                backgroundGuides += `<polygon points="${bgPoints.join(" ")}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+            }
+
+            const svg = `
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" class="overflow-visible">
+                    <line x1="${center}" y1="${center - maxRadius}" x2="${center}" y2="${center + maxRadius}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <line x1="${center - maxRadius}" y1="${center}" x2="${center + maxRadius}" y2="${center}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    ${backgroundGuides}
+                    <polygon points="${pointsStr}" fill="rgba(0, 102, 255, 0.25)" stroke="#0066ff" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(0,102,255,0.5))"/>
+                </svg>
+            `;
+            container.innerHTML = svg;
+        }
+
+        function selectPitchPlayer(player, stats, nodeEl) {
+            document.querySelectorAll("#tactical-field-nodes > button").forEach(btn => {
+                btn.classList.remove("ring-4", "ring-primary", "scale-110");
+                btn.classList.add("scale-100");
+            });
+            
+            nodeEl.classList.add("ring-4", "ring-primary", "scale-110");
+            nodeEl.classList.remove("scale-100");
+            
+            const detailPanel = document.getElementById("modal-pitch-player-detail");
+            detailPanel.classList.remove("hidden");
+            
+            document.getElementById("pitch-detail-name").textContent = player.name;
+            document.getElementById("pitch-detail-number").textContent = player.number ? `#${player.number}` : "-";
+            document.getElementById("pitch-detail-position").textContent = player.position;
+            document.getElementById("pitch-detail-goals").textContent = stats.goals;
+            document.getElementById("pitch-detail-assists").textContent = stats.assists;
+            document.getElementById("pitch-detail-club").textContent = player.club || "National Team";
+            
+            const img = document.getElementById("pitch-detail-avatar");
+            const fallback = document.getElementById("pitch-detail-avatar-fallback");
+            if (player.avatar) {
+                img.src = player.avatar;
+                img.classList.remove("hidden");
+                fallback.classList.add("hidden");
+            } else {
+                img.src = "";
+                img.classList.add("hidden");
+                fallback.classList.remove("hidden");
+            }
+            
+            document.getElementById("radar-lbl-att").textContent = stats.attack;
+            document.getElementById("radar-lbl-def").textContent = stats.defending;
+            document.getElementById("radar-lbl-pas").textContent = stats.passing;
+            document.getElementById("radar-lbl-phy").textContent = stats.physicality;
+            
+            drawPlayerRadar("pitch-detail-radar-chart", stats);
+        }
+
+        function renderTacticalBoard(squad) {
+            const field = document.getElementById("tactical-field-nodes");
+            field.innerHTML = "";
+            
+            document.getElementById("modal-pitch-player-detail").classList.add("hidden");
+            switchModalTab('roster');
+
+            if (squad.length === 0) return;
+
+            const gkList = squad.filter(p => p.position.toLowerCase().includes("gk") || p.position.toLowerCase().includes("goalkeeper"));
+            const defList = squad.filter(p => p.position.toLowerCase().includes("def") || p.position.toLowerCase().includes("back") || p.position.toLowerCase().includes("cb") || p.position.toLowerCase().includes("lb") || p.position.toLowerCase().includes("rb"));
+            const midList = squad.filter(p => p.position.toLowerCase().includes("mid") || p.position.toLowerCase().includes("cm") || p.position.toLowerCase().includes("dm") || p.position.toLowerCase().includes("am"));
+            const attList = squad.filter(p => p.position.toLowerCase().includes("forward") || p.position.toLowerCase().includes("striker") || p.position.toLowerCase().includes("wing") || p.position.toLowerCase().includes("st") || p.position.toLowerCase().includes("cf") || p.position.toLowerCase().includes("lw") || p.position.toLowerCase().includes("rw") || p.position.toLowerCase().includes("att"));
+            
+            let pickedNames = new Set();
+            let startingXI = [];
+            
+            function pickPlayer(list, defaultPos) {
+                for (let p of list) {
+                    if (!pickedNames.has(p.name)) {
+                        pickedNames.add(p.name);
+                        startingXI.push({ ...p, position: p.position !== "Squad Player" ? p.position : defaultPos });
+                        return true;
+                    }
+                }
+                for (let p of squad) {
+                    if (!pickedNames.has(p.name)) {
+                        pickedNames.add(p.name);
+                        startingXI.push({ ...p, position: defaultPos });
+                        return true;
+                    }
+                }
+                startingXI.push({ name: "Squad Player", position: defaultPos, number: null, avatar: null, club: "" });
+                return false;
+            }
+
+            pickPlayer(gkList, "Goalkeeper");
+            pickPlayer(defList, "Left Back");
+            pickPlayer(defList, "Center Back");
+            pickPlayer(defList, "Center Back");
+            pickPlayer(defList, "Right Back");
+            pickPlayer(midList, "Central Midfielder");
+            pickPlayer(midList, "Defensive Midfielder");
+            pickPlayer(midList, "Attacking Midfielder");
+            pickPlayer(attList, "Left Winger");
+            pickPlayer(attList, "Striker");
+            pickPlayer(attList, "Right Winger");
+
+            const coords = [
+                { x: 50, y: 88, label: "GK" },
+                { x: 15, y: 68, label: "LB" },
+                { x: 38, y: 72, label: "LCB" },
+                { x: 62, y: 72, label: "RCB" },
+                { x: 85, y: 68, label: "RB" },
+                { x: 25, y: 46, label: "LM" },
+                { x: 50, y: 52, label: "CM" },
+                { x: 75, y: 46, label: "RM" },
+                { x: 20, y: 22, label: "LW" },
+                { x: 50, y: 16, label: "ST" },
+                { x: 80, y: 22, label: "RW" }
+            ];
+
+            startingXI.forEach((player, i) => {
+                const coord = coords[i];
+                const stats = getDeterministicStats(player.name, player.position);
+                const initials = player.name.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase();
+                
+                const btn = document.createElement("button");
+                btn.className = "absolute w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center border-2 border-white/25 shadow-lg text-[10px] font-bold active:scale-95 transition-all hover:scale-105 z-20 scale-100";
+                btn.style.left = `${coord.x}%`;
+                btn.style.top = `${coord.y}%`;
+                btn.style.transform = `translate(-50%, -50%)`;
+                
+                btn.innerHTML = `
+                    <span>${player.number || initials}</span>
+                    <span class="absolute top-9 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded text-[8px] text-white whitespace-nowrap font-normal border border-white/5">${player.name.split(" ").pop()}</span>
+                `;
+                
+                btn.addEventListener("click", () => selectPitchPlayer(player, stats, btn));
+                field.appendChild(btn);
+                
+                if (i === 0) {
+                    selectPitchPlayer(player, stats, btn);
+                }
+            });
         }
 
         function closeTeamModal() {

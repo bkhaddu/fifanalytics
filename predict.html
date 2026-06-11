@@ -148,13 +148,22 @@
             <img src="logo.png" class="h-12 w-auto object-contain" alt="FIFA Analytics Logo"/>
         </div>
 
-        <!-- Predict vs Records Toggle -->
-        <div class="flex bg-white/5 border border-white/10 rounded-2xl p-1 w-full" id="tabs-toggle">
-            <button onclick="toggleMainTab('predict')" id="predict-tab-btn" class="flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest active-tab transition-all">
-                PREDICT MATCHES
+        <!-- 5-Tab Navigation Toggle -->
+        <div class="flex overflow-x-auto gap-2 no-scrollbar bg-white/5 border border-white/10 rounded-2xl p-1.5 w-full mask-gradient-edge scroll-smooth" id="tabs-toggle">
+            <button onclick="toggleMainTab('predict')" id="predict-tab-btn" class="flex-shrink-0 px-4 py-2.5 rounded-xl font-bold font-label-caps text-[10px] tracking-wider active-tab transition-all">
+                PREDICT
             </button>
-            <button onclick="toggleMainTab('records')" id="records-tab-btn" class="flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest text-on-surface-variant hover:text-secondary transition-all">
-                WORLD CUP RECORDS
+            <button onclick="toggleMainTab('bracket')" id="bracket-tab-btn" class="flex-shrink-0 px-4 py-2.5 rounded-xl font-bold font-label-caps text-[10px] tracking-wider text-on-surface-variant hover:text-secondary transition-all">
+                KNOCKOUT BRACKET
+            </button>
+            <button onclick="toggleMainTab('compare')" id="compare-tab-btn" class="flex-shrink-0 px-4 py-2.5 rounded-xl font-bold font-label-caps text-[10px] tracking-wider text-on-surface-variant hover:text-secondary transition-all">
+                PLAYER COMPARISON
+            </button>
+            <button onclick="toggleMainTab('live')" id="live-tab-btn" class="flex-shrink-0 px-4 py-2.5 rounded-xl font-bold font-label-caps text-[10px] tracking-wider text-on-surface-variant hover:text-secondary transition-all">
+                LIVE CENTER
+            </button>
+            <button onclick="toggleMainTab('records')" id="records-tab-btn" class="flex-shrink-0 px-4 py-2.5 rounded-xl font-bold font-label-caps text-[10px] tracking-wider text-on-surface-variant hover:text-secondary transition-all">
+                RECORDS
             </button>
         </div>
     </header>
@@ -362,6 +371,183 @@
             </section>
         </div>
 
+        <!-- ==================== BRACKET TAB ==================== -->
+        <div id="bracket-section" class="space-y-6 hidden">
+            <!-- Bracket Header Card -->
+            <section class="glass-card rounded-xl p-5 inner-glow relative overflow-hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-headline-md text-headline-md text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[22px]">account_tree</span>
+                        Knockout Bracket Simulator
+                    </h3>
+                    <button onclick="simulateFullBracket()" class="px-4 py-2 bg-secondary hover:bg-secondary/80 text-white font-label-caps text-[10px] tracking-widest rounded-xl transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                        AUTO SIMULATE
+                    </button>
+                </div>
+                <p class="text-on-surface-variant text-[12px] mb-6">Click on any team box in the bracket to manually advance them to the next round, or click <strong>AUTO SIMULATE</strong> to let the database calculate every match outcome based on statistics.</p>
+
+                <!-- Bracket Tree Layout -->
+                <div class="flex overflow-x-auto gap-8 no-scrollbar py-4 px-2 scroll-smooth items-center select-none" id="bracket-tree-container">
+                    
+                    <!-- Round of 16 -->
+                    <div class="flex flex-col gap-6 w-44 flex-shrink-0">
+                        <div class="font-label-caps text-[9px] text-on-surface-variant text-center border-b border-white/5 pb-2">ROUND OF 16</div>
+                        <div class="flex flex-col gap-8" id="b-r16">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Quarter-Finals -->
+                    <div class="flex flex-col gap-16 w-44 flex-shrink-0">
+                        <div class="font-label-caps text-[9px] text-on-surface-variant text-center border-b border-white/5 pb-2">QUARTER-FINALS</div>
+                        <div class="flex flex-col gap-24" id="b-qf">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Semi-Finals -->
+                    <div class="flex flex-col gap-32 w-44 flex-shrink-0">
+                        <div class="font-label-caps text-[9px] text-on-surface-variant text-center border-b border-white/5 pb-2">SEMI-FINALS</div>
+                        <div class="flex flex-col gap-48" id="b-sf">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Final -->
+                    <div class="flex flex-col gap-48 w-44 flex-shrink-0">
+                        <div class="font-label-caps text-[9px] text-on-surface-variant text-center border-b border-white/5 pb-2">FINAL</div>
+                        <div class="flex flex-col gap-12" id="b-final">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Champion Crown Box -->
+                    <div class="flex flex-col items-center justify-center w-48 flex-shrink-0 bg-white/5 border border-white/10 rounded-2xl p-6 text-center stadium-glow relative overflow-hidden shadow-2xl">
+                        <span class="material-symbols-outlined text-[36px] text-secondary animate-bounce mb-2">workspace_premium</span>
+                        <div class="font-label-caps text-[9px] text-on-surface-variant tracking-wider">WORLD CHAMPION</div>
+                        <h4 id="bracket-champion-name" class="font-headline-md text-white text-[16px] font-extrabold uppercase mt-2">-</h4>
+                        <img id="bracket-champion-badge" class="w-16 h-16 object-contain mt-3 hidden" src="" alt="Champion Badge"/>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== COMPARISON TAB ==================== -->
+        <div id="compare-section" class="space-y-6 hidden">
+            <!-- Player Selectors -->
+            <section class="glass-card rounded-xl p-5 inner-glow relative overflow-hidden">
+                <h3 class="font-headline-md text-headline-md mb-4 text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[22px]">compare_arrows</span>
+                    Compare Players
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1">
+                        <label class="font-label-caps text-[9px] text-on-surface-variant">PLAYER A (BLUE)</label>
+                        <select id="compare-player-a" onchange="updateComparison()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2.5 text-white outline-none focus:border-primary cursor-pointer animate-none">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="font-label-caps text-[9px] text-on-surface-variant">PLAYER B (RED)</label>
+                        <select id="compare-player-b" onchange="updateComparison()" class="bg-surface-container-high border border-white/10 rounded-xl text-xs px-3 py-2.5 text-white outline-none focus:border-primary cursor-pointer animate-none">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparison Dashboard (Radar Chart & Stats) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Radar Chart Card -->
+                <section class="glass-card rounded-xl p-5 inner-glow flex flex-col items-center justify-center">
+                    <span class="font-label-caps text-[9px] text-on-surface-variant mb-4 tracking-widest text-center block">PERFORMANCE RADAR</span>
+                    <div class="w-56 h-56 relative flex items-center justify-center" id="compare-radar-chart">
+                        <!-- SVG radar dynamic comparison -->
+                    </div>
+                    <!-- Legend -->
+                    <div class="flex gap-6 mt-4 text-[10px] font-label-caps justify-center">
+                        <div class="flex items-center gap-2"><span class="w-3 h-1.5 bg-primary rounded-full"></span><span id="compare-legend-a" class="text-white">-</span></div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-1.5 bg-secondary rounded-full"></span><span id="compare-legend-b" class="text-white">-</span></div>
+                    </div>
+                </section>
+
+                <!-- Numeric Comparison Card -->
+                <section class="glass-card rounded-xl p-5 inner-glow">
+                    <span class="font-label-caps text-[9px] text-on-surface-variant mb-4 block tracking-widest">HEAD TO HEAD STATS</span>
+                    <div class="space-y-4" id="compare-stats-list">
+                        <!-- Stats rows populated dynamically -->
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ==================== LIVE CENTER TAB ==================== -->
+        <div id="live-section" class="space-y-6 hidden">
+            <!-- Match Simulator Board -->
+            <section class="glass-card rounded-xl p-5 inner-glow relative overflow-hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-headline-md text-headline-md text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[22px]">sports_soccer</span>
+                        Live Match Center
+                    </h3>
+                    <button id="live-simulation-btn" onclick="toggleLiveMatchSimulation()" class="px-4 py-2 bg-primary hover:bg-primary/80 text-black font-label-caps text-[10px] tracking-widest rounded-xl transition-all shadow-[0_0_15px_rgba(0,102,255,0.3)]">
+                        START SIMULATION
+                    </button>
+                </div>
+
+                <!-- Match Scoreboard -->
+                <div class="flex justify-between items-center bg-white/5 rounded-2xl border border-white/5 p-5 mb-6">
+                    <div class="text-center flex-1">
+                        <img id="live-home-badge" class="w-12 h-12 mx-auto mb-2 object-contain" src="https://r2.thesportsdb.com/images/media/team/badge/3zplhu1726167477.png/tiny" alt="Home Team"/>
+                        <p id="live-home-name" class="font-bold text-white text-[13px] uppercase">ARGENTINA</p>
+                    </div>
+                    <div class="text-center px-4">
+                        <span id="live-match-minute" class="font-label-caps text-[10px] text-secondary font-bold block mb-1">NOT STARTED</span>
+                        <div class="font-stats-numeric text-[32px] text-white font-extrabold tracking-widest" id="live-match-score">0 - 0</div>
+                    </div>
+                    <div class="text-center flex-1">
+                        <img id="live-away-badge" class="w-12 h-12 mx-auto mb-2 object-contain" src="https://r2.thesportsdb.com/images/media/team/badge/p3n0z51726166851.png/tiny" alt="Away Team"/>
+                        <p id="live-away-name" class="font-bold text-white text-[13px] uppercase">FRANCE</p>
+                    </div>
+                </div>
+
+                <!-- Pitch Heatmap Card -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Interactive 2D Field Heatmap -->
+                    <div class="flex flex-col items-center">
+                        <span class="font-label-caps text-[9px] text-on-surface-variant mb-2 block tracking-widest text-center">TERRITORIAL PRESSURE HEATMAP</span>
+                        <div class="relative w-full aspect-[4/3] rounded-2xl border border-white/10 bg-[#0d1e13] overflow-hidden shadow-inner flex items-center justify-center">
+                            <!-- 2D Pitch markings -->
+                            <div class="absolute inset-0 pointer-events-none opacity-25 p-2">
+                                <div class="border border-white w-full h-full rounded-lg relative">
+                                    <div class="absolute w-full h-[1px] bg-white top-1/2 -translate-y-1/2"></div>
+                                    <div class="absolute w-16 h-16 rounded-full border border-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                                    <div class="absolute top-0 w-24 h-8 border-b border-x border-white left-1/2 -translate-x-1/2"></div>
+                                    <div class="absolute bottom-0 w-24 h-8 border-t border-x border-white left-1/2 -translate-x-1/2"></div>
+                                </div>
+                            </div>
+                            <!-- Canvas Heatmap Overlay -->
+                            <canvas id="live-heatmap-canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-80"></canvas>
+                            <!-- Live Simulation Visualizer indicators -->
+                            <div class="absolute top-4 left-4 flex gap-3 text-[8px] font-label-caps bg-black/60 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/5">
+                                <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Home Possession</div>
+                                <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> Away Attack</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Timeline Feed -->
+                    <div class="flex flex-col h-[300px] w-full">
+                        <span class="font-label-caps text-[9px] text-on-surface-variant mb-2 block tracking-widest">MATCH TIMELINE EVENTS</span>
+                        <div class="flex-1 bg-white/5 border border-white/5 rounded-2xl p-4 overflow-y-auto no-scrollbar space-y-3" id="live-timeline-events">
+                            <p class="text-center text-on-surface-variant text-[11px] font-label-caps py-12">Simulate match to generate events timeline</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
         <!-- ==================== RECORDS TAB ==================== -->
         <div id="records-section" class="space-y-6 hidden">
             <!-- Winners Card -->
@@ -535,23 +721,30 @@
     </nav>
 
     <script>
-        // Tab system
         function toggleMainTab(tabName) {
-            const predictSection = document.getElementById("predict-section");
-            const recordsSection = document.getElementById("records-section");
-            const predictBtn = document.getElementById("predict-tab-btn");
-            const recordsBtn = document.getElementById("records-tab-btn");
+            const sections = {
+                predict: document.getElementById("predict-section"),
+                bracket: document.getElementById("bracket-section"),
+                compare: document.getElementById("compare-section"),
+                live: document.getElementById("live-section"),
+                records: document.getElementById("records-section")
+            };
+            const buttons = {
+                predict: document.getElementById("predict-tab-btn"),
+                bracket: document.getElementById("bracket-tab-btn"),
+                compare: document.getElementById("compare-tab-btn"),
+                live: document.getElementById("live-tab-btn"),
+                records: document.getElementById("records-tab-btn")
+            };
 
-            if (tabName === "predict") {
-                predictSection.classList.remove("hidden");
-                recordsSection.classList.add("hidden");
-                predictBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest active-tab transition-all";
-                recordsBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest text-on-surface-variant hover:text-secondary transition-all";
-            } else {
-                predictSection.classList.add("hidden");
-                recordsSection.classList.remove("hidden");
-                recordsBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest active-tab transition-all";
-                predictBtn.className = "flex-1 py-3 text-center rounded-xl font-bold font-label-caps text-[11px] tracking-widest text-on-surface-variant hover:text-secondary transition-all";
+            for (let name in sections) {
+                if (name === tabName) {
+                    sections[name].classList.remove("hidden");
+                    buttons[name].className = "flex-shrink-0 px-4 py-2.5 rounded-xl font-bold font-label-caps text-[10px] tracking-wider active-tab transition-all";
+                } else {
+                    sections[name].classList.add("hidden");
+                    buttons[name].className = "flex-shrink-0 px-4 py-2.5 rounded-xl font-bold font-label-caps text-[10px] tracking-wider text-on-surface-variant hover:text-secondary transition-all";
+                }
             }
         }
 
@@ -948,9 +1141,548 @@
             runMatchSimulation(currentHomeTeam, currentAwayTeam, scoreOrTime, status);
         }
 
+        // ==================== KNOCKOUT BRACKET SIMULATOR LOGIC ====================
+        const initialR16Matches = [
+            { t1: "Argentina", t2: "Senegal" },
+            { t1: "Netherlands", t2: "Portugal" },
+            { t1: "Brazil", t2: "Mexico" },
+            { t1: "Spain", t2: "Croatia" },
+            { t1: "France", t2: "USA" },
+            { t1: "England", t2: "Morocco" },
+            { t1: "Uruguay", t2: "Switzerland" },
+            { t1: "Germany", t2: "Belgium" }
+        ];
+
+        let bracketState = {
+            r16: Array(8).fill(null),
+            qf: Array(4).fill(null),
+            sf: Array(2).fill(null),
+            final: { t1: null, t2: null, winner: null },
+            champion: null
+        };
+
+        function initBracket() {
+            bracketState.r16 = initialR16Matches.map(m => ({ t1: m.t1, t2: m.t2, winner: null }));
+            bracketState.qf = Array(4).fill(null).map(() => ({ t1: null, t2: null, winner: null }));
+            bracketState.sf = Array(2).fill(null).map(() => ({ t1: null, t2: null, winner: null }));
+            bracketState.final = { t1: null, t2: null, winner: null };
+            bracketState.champion = null;
+            renderBracket();
+        }
+
+        function clearDownstream(startIdx, slot, round) {
+            if (round === 'qf') {
+                bracketState.qf[startIdx].winner = null;
+                const destSfIdx = Math.floor(startIdx / 2);
+                const sfSlot = (startIdx % 2 === 0) ? 't1' : 't2';
+                bracketState.sf[destSfIdx][sfSlot] = null;
+                clearDownstream(destSfIdx, sfSlot, 'sf');
+            } else if (round === 'sf') {
+                bracketState.sf[startIdx].winner = null;
+                const finalSlot = (startIdx === 0) ? 't1' : 't2';
+                bracketState.final[finalSlot] = null;
+                clearDownstream(0, finalSlot, 'final');
+            } else if (round === 'final') {
+                bracketState.final.winner = null;
+                bracketState.champion = null;
+            }
+        }
+
+        function advanceTeam(round, matchIdx, teamName) {
+            if (!teamName) return;
+            if (round === 'r16') {
+                bracketState.r16[matchIdx].winner = teamName;
+                const destQfIdx = Math.floor(matchIdx / 2);
+                const slot = (matchIdx % 2 === 0) ? 't1' : 't2';
+                if (bracketState.qf[destQfIdx][slot] !== teamName) {
+                    clearDownstream(destQfIdx, slot, 'qf');
+                }
+                bracketState.qf[destQfIdx][slot] = teamName;
+            } else if (round === 'qf') {
+                const match = bracketState.qf[matchIdx];
+                if (!match.t1 || !match.t2) return;
+                match.winner = teamName;
+                const destSfIdx = Math.floor(matchIdx / 2);
+                const slot = (matchIdx % 2 === 0) ? 't1' : 't2';
+                if (bracketState.sf[destSfIdx][slot] !== teamName) {
+                    clearDownstream(destSfIdx, slot, 'sf');
+                }
+                bracketState.sf[destSfIdx][slot] = teamName;
+            } else if (round === 'sf') {
+                const match = bracketState.sf[matchIdx];
+                if (!match.t1 || !match.t2) return;
+                match.winner = teamName;
+                const slot = (matchIdx === 0) ? 't1' : 't2';
+                if (bracketState.final[slot] !== teamName) {
+                    clearDownstream(0, slot, 'final');
+                }
+                bracketState.final[slot] = teamName;
+            } else if (round === 'final') {
+                const match = bracketState.final;
+                if (!match.t1 || !match.t2) return;
+                match.winner = teamName;
+                bracketState.champion = teamName;
+            }
+            renderBracket();
+        }
+
+        function simulateMatchWinner(t1, t2) {
+            if (!t1 && !t2) return null;
+            if (!t1) return t2;
+            if (!t2) return t1;
+            const s1 = teamStats[t1] || { rank: 25, form: 70, titles: 0 };
+            const s2 = teamStats[t2] || { rank: 25, form: 70, titles: 0 };
+            const power1 = s1.form + (s1.titles * 10) + (100 - s1.rank);
+            const power2 = s2.form + (s2.titles * 10) + (100 - s2.rank);
+            const prob1 = power1 / (power1 + power2);
+            return Math.random() < prob1 ? t1 : t2;
+        }
+
+        function simulateFullBracket() {
+            // R16
+            bracketState.r16.forEach((m, idx) => {
+                if (!m.winner) {
+                    const w = simulateMatchWinner(m.t1, m.t2);
+                    advanceTeam('r16', idx, w);
+                }
+            });
+
+            // QF
+            setTimeout(() => {
+                bracketState.qf.forEach((m, idx) => {
+                    if (m.t1 && m.t2 && !m.winner) {
+                        const w = simulateMatchWinner(m.t1, m.t2);
+                        advanceTeam('qf', idx, w);
+                    }
+                });
+
+                // SF
+                setTimeout(() => {
+                    bracketState.sf.forEach((m, idx) => {
+                        if (m.t1 && m.t2 && !m.winner) {
+                            const w = simulateMatchWinner(m.t1, m.t2);
+                            advanceTeam('sf', idx, w);
+                        }
+                    });
+
+                    // Final
+                    setTimeout(() => {
+                        const f = bracketState.final;
+                        if (f.t1 && f.t2 && !f.winner) {
+                            const w = simulateMatchWinner(f.t1, f.t2);
+                            advanceTeam('final', 0, w);
+                        }
+                    }, 400);
+
+                }, 400);
+
+            }, 400);
+        }
+
+        function getTeamBadge(teamName) {
+            const stats = teamStats[teamName];
+            return stats ? stats.badge : "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+        }
+
+        function renderBracketMatch(m, idx, round) {
+            const t1 = m.t1;
+            const t2 = m.t2;
+            const winner = m.winner;
+            
+            const badge1 = t1 ? getTeamBadge(t1) : "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+            const badge2 = t2 ? getTeamBadge(t2) : "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=48&auto=format&fit=crop";
+
+            const click1 = t1 ? `onclick="advanceTeam('${round}', ${idx}, '${t1}')"` : "";
+            const click2 = t2 ? `onclick="advanceTeam('${round}', ${idx}, '${t2}')"` : "";
+
+            return `
+                <div class="bg-white/5 border border-white/10 rounded-xl p-2.5 flex flex-col gap-1.5 relative hover:border-secondary/40 transition-all shadow-lg min-w-[170px]">
+                    <div ${click1} class="flex items-center justify-between cursor-pointer p-1 rounded-lg hover:bg-white/5 transition-all ${winner === t1 && t1 ? 'bg-primary/20 border border-primary/20 text-white font-bold' : 'text-on-surface-variant'}">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <img class="w-4 h-4 object-contain" src="${badge1}" alt="${t1 || 'TBD'}"/>
+                            <span class="truncate text-[10px] tracking-wide ml-1.5">${t1 || 'TBD'}</span>
+                        </div>
+                        ${winner === t1 && t1 ? '<span class="material-symbols-outlined text-[12px] text-primary">check_circle</span>' : ''}
+                    </div>
+                    <div ${click2} class="flex items-center justify-between cursor-pointer p-1 rounded-lg hover:bg-white/5 transition-all ${winner === t2 && t2 ? 'bg-primary/20 border border-primary/20 text-white font-bold' : 'text-on-surface-variant'}">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <img class="w-4 h-4 object-contain" src="${badge2}" alt="${t2 || 'TBD'}"/>
+                            <span class="truncate text-[10px] tracking-wide ml-1.5">${t2 || 'TBD'}</span>
+                        </div>
+                        ${winner === t2 && t2 ? '<span class="material-symbols-outlined text-[12px] text-primary">check_circle</span>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBracket() {
+            // R16
+            const r16Div = document.getElementById("b-r16");
+            r16Div.innerHTML = bracketState.r16.map((m, idx) => renderBracketMatch(m, idx, 'r16')).join("");
+            
+            // QF
+            const qfDiv = document.getElementById("b-qf");
+            qfDiv.innerHTML = bracketState.qf.map((m, idx) => renderBracketMatch(m, idx, 'qf')).join("");
+            
+            // SF
+            const sfDiv = document.getElementById("b-sf");
+            sfDiv.innerHTML = bracketState.sf.map((m, idx) => renderBracketMatch(m, idx, 'sf')).join("");
+            
+            // Final
+            const finalDiv = document.getElementById("b-final");
+            finalDiv.innerHTML = renderBracketMatch(bracketState.final, 0, 'final');
+            
+            // Champion Card
+            const champName = document.getElementById("bracket-champion-name");
+            const champBadge = document.getElementById("bracket-champion-badge");
+            if (bracketState.champion) {
+                champName.textContent = bracketState.champion;
+                champBadge.src = getTeamBadge(bracketState.champion);
+                champBadge.classList.remove("hidden");
+            } else {
+                champName.textContent = "TBD";
+                champBadge.classList.add("hidden");
+            }
+        }
+
+        // ==================== PLAYER COMPARISON LOGIC ====================
+        const playersDatabase = [
+            { name: "Lionel Messi", nation: "Argentina", position: "Forward", age: 38, club: "Inter Miami", goals: 843, assists: 372, stats: { attack: 95, defending: 35, passing: 94, physicality: 78 } },
+            { name: "Kylian Mbappé", nation: "France", position: "Forward", age: 27, club: "Real Madrid", goals: 332, assists: 125, stats: { attack: 96, defending: 30, passing: 84, physicality: 89 } },
+            { name: "Erling Haaland", nation: "Norway", position: "Forward", age: 25, club: "Manchester City", goals: 260, assists: 48, stats: { attack: 97, defending: 28, passing: 72, physicality: 93 } },
+            { name: "Kevin De Bruyne", nation: "Belgium", position: "Midfielder", age: 34, club: "Manchester City", goals: 148, assists: 256, stats: { attack: 82, defending: 62, passing: 97, physicality: 80 } },
+            { name: "Jude Bellingham", nation: "England", position: "Midfielder", age: 22, club: "Real Madrid", goals: 58, assists: 44, stats: { attack: 88, defending: 76, passing: 88, physicality: 86 } },
+            { name: "Vinícius Júnior", nation: "Brazil", position: "Forward", age: 25, club: "Real Madrid", goals: 96, assists: 75, stats: { attack: 93, defending: 32, passing: 82, physicality: 84 } },
+            { name: "Luka Modrić", nation: "Croatia", position: "Midfielder", age: 40, club: "Real Madrid", goals: 92, assists: 160, stats: { attack: 76, defending: 68, passing: 94, physicality: 72 } },
+            { name: "Jamal Musiala", nation: "Germany", position: "Midfielder", age: 23, club: "Bayern Munich", goals: 46, assists: 38, stats: { attack: 86, defending: 45, passing: 89, physicality: 76 } },
+            { name: "Bukayo Saka", nation: "England", position: "Forward", age: 24, club: "Arsenal", goals: 74, assists: 62, stats: { attack: 89, defending: 48, passing: 85, physicality: 80 } },
+            { name: "Antoine Griezmann", nation: "France", position: "Forward", age: 35, club: "Atlético Madrid", goals: 268, assists: 120, stats: { attack: 85, defending: 65, passing: 88, physicality: 78 } }
+        ];
+
+        function populateComparisonDropdowns() {
+            const selectA = document.getElementById("compare-player-a");
+            const selectB = document.getElementById("compare-player-b");
+            if (!selectA || !selectB) return;
+            
+            selectA.innerHTML = "";
+            selectB.innerHTML = "";
+            
+            playersDatabase.forEach((p, idx) => {
+                selectA.innerHTML += `<option value="${idx}" ${idx === 0 ? 'selected' : ''}>${p.name} (${p.nation})</option>`;
+                selectB.innerHTML += `<option value="${idx}" ${idx === 1 ? 'selected' : ''}>${p.name} (${p.nation})</option>`;
+            });
+            updateComparison();
+        }
+
+        function drawComparisonRadar(containerId, p1, p2) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = "";
+            
+            const size = 220;
+            const center = size / 2;
+            const maxRadius = size * 0.4;
+            
+            const statsKeys = ["attack", "defending", "passing", "physicality"];
+            const labels = ["Attacking", "Defending", "Passing", "Physicality"];
+            const angles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+            
+            let gridHtml = "";
+            for (let r = 0.25; r <= 1.0; r += 0.25) {
+                const rad = r * maxRadius;
+                let points = [];
+                for (let i = 0; i < 4; i++) {
+                    const x = center + rad * Math.cos(angles[i] - Math.PI / 2);
+                    const y = center + rad * Math.sin(angles[i] - Math.PI / 2);
+                    points.push(`${x},${y}`);
+                }
+                gridHtml += `<polygon points="${points.join(" ")}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+            }
+            
+            let pointsA = [];
+            statsKeys.forEach((k, i) => {
+                const val = p1.stats[k];
+                const rad = (val / 100) * maxRadius;
+                const x = center + rad * Math.cos(angles[i] - Math.PI / 2);
+                const y = center + rad * Math.sin(angles[i] - Math.PI / 2);
+                pointsA.push(`${x},${y}`);
+            });
+            
+            let pointsB = [];
+            statsKeys.forEach((k, i) => {
+                const val = p2.stats[k];
+                const rad = (val / 100) * maxRadius;
+                const x = center + rad * Math.cos(angles[i] - Math.PI / 2);
+                const y = center + rad * Math.sin(angles[i] - Math.PI / 2);
+                pointsB.push(`${x},${y}`);
+            });
+            
+            let labelsHtml = "";
+            labels.forEach((lbl, i) => {
+                const offset = 15;
+                const rad = maxRadius + offset;
+                const x = center + rad * Math.cos(angles[i] - Math.PI / 2);
+                const y = center + rad * Math.sin(angles[i] - Math.PI / 2);
+                
+                let textAnchor = "middle";
+                if (angles[i] === Math.PI / 2) textAnchor = "start";
+                else if (angles[i] === 3 * Math.PI / 2) textAnchor = "end";
+                
+                let dy = "4px";
+                if (angles[i] === 0) dy = "-4px";
+                else if (angles[i] === Math.PI) dy = "12px";
+                
+                labelsHtml += `<text x="${x}" y="${y}" text-anchor="${textAnchor}" dy="${dy}" fill="#a8a295" font-family="Work Sans" font-size="9px" font-weight="600" letter-spacing="0.05em">${lbl.toUpperCase()}</text>`;
+            });
+
+            const svg = `
+                <svg width="100%" height="100%" viewBox="0 0 ${size} ${size}" class="overflow-visible">
+                    <line x1="${center}" y1="${center - maxRadius}" x2="${center}" y2="${center + maxRadius}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <line x1="${center - maxRadius}" y1="${center}" x2="${center + maxRadius}" y2="${center}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    ${gridHtml}
+                    <polygon points="${pointsA.join(" ")}" fill="rgba(0, 102, 255, 0.2)" stroke="#0066ff" stroke-width="2" filter="drop-shadow(0 0 6px rgba(0,102,255,0.4))"/>
+                    <polygon points="${pointsB.join(" ")}" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="2" filter="drop-shadow(0 0 6px rgba(239,68,68,0.4))"/>
+                    ${labelsHtml}
+                </svg>
+            `;
+            container.innerHTML = svg;
+        }
+
+        function updateComparison() {
+            const idxA = parseInt(document.getElementById("compare-player-a").value);
+            const idxB = parseInt(document.getElementById("compare-player-b").value);
+            
+            const p1 = playersDatabase[idxA];
+            const p2 = playersDatabase[idxB];
+            
+            document.getElementById("compare-legend-a").textContent = p1.name.toUpperCase();
+            document.getElementById("compare-legend-b").textContent = p2.name.toUpperCase();
+            
+            const statsList = document.getElementById("compare-stats-list");
+            statsList.innerHTML = `
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="font-stats-numeric text-primary text-sm">${p1.age} yrs</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">AGE</span>
+                    <span class="font-stats-numeric text-secondary text-sm text-right">${p2.age} yrs</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="font-bold text-white truncate max-w-[120px]">${p1.club}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">CLUB</span>
+                    <span class="font-bold text-white truncate max-w-[120px] text-right">${p2.club}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="text-on-surface-variant font-bold">${p1.position}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">POSITION</span>
+                    <span class="text-on-surface-variant font-bold text-right">${p2.position}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="font-stats-numeric text-white text-base">${p1.goals}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">CAREER GOALS</span>
+                    <span class="font-stats-numeric text-white text-base text-right">${p2.goals}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="font-stats-numeric text-white text-base">${p1.assists}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">CAREER ASSISTS</span>
+                    <span class="font-stats-numeric text-white text-base text-right">${p2.assists}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="font-stats-numeric text-primary text-sm">${p1.stats.attack}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">ATTACKING</span>
+                    <span class="font-stats-numeric text-secondary text-sm text-right">${p2.stats.attack}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="font-stats-numeric text-primary text-sm">${p1.stats.defending}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">DEFENDING</span>
+                    <span class="font-stats-numeric text-secondary text-sm text-right">${p2.stats.defending}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2 border-b border-white/5">
+                    <span class="font-stats-numeric text-primary text-sm">${p1.stats.passing}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">PASSING</span>
+                    <span class="font-stats-numeric text-secondary text-sm text-right">${p2.stats.passing}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs py-2">
+                    <span class="font-stats-numeric text-primary text-sm">${p1.stats.physicality}</span>
+                    <span class="font-label-caps text-on-surface-variant text-[9px]">PHYSICALITY</span>
+                    <span class="font-stats-numeric text-secondary text-sm text-right">${p2.stats.physicality}</span>
+                </div>
+            `;
+            
+            drawComparisonRadar("compare-radar-chart", p1, p2);
+        }
+
+        // ==================== LIVE CENTER SIMULATION LOGIC ====================
+        let liveSimInterval = null;
+        let liveSimMinute = 0;
+        let liveHomeScore = 0;
+        let liveAwayScore = 0;
+        let heatmapPoints = [];
+
+        function toggleLiveMatchSimulation() {
+            const btn = document.getElementById("live-simulation-btn");
+            if (!btn) return;
+            if (liveSimInterval) {
+                clearInterval(liveSimInterval);
+                liveSimInterval = null;
+                btn.textContent = "START SIMULATION";
+                btn.className = "px-4 py-2 bg-primary hover:bg-primary/80 text-black font-label-caps text-[10px] tracking-widest rounded-xl transition-all shadow-[0_0_15px_rgba(0,102,255,0.3)]";
+            } else {
+                btn.textContent = "STOP SIMULATION";
+                btn.className = "px-4 py-2 bg-secondary hover:bg-secondary/80 text-white font-label-caps text-[10px] tracking-widest rounded-xl transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)]";
+                runLiveMatchSimulation();
+            }
+        }
+
+        function initHeatmap() {
+            const canvas = document.getElementById("live-heatmap-canvas");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawHeatmap() {
+            const canvas = document.getElementById("live-heatmap-canvas");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            heatmapPoints.forEach(pt => {
+                const cx = (pt.x / 100) * canvas.width;
+                const cy = (pt.y / 100) * canvas.height;
+                const rad = pt.radius;
+                
+                const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, rad);
+                if (pt.isHome) {
+                    grad.addColorStop(0, `rgba(0, 102, 255, ${pt.intensity})`);
+                    grad.addColorStop(1, 'rgba(0, 102, 255, 0)');
+                } else {
+                    grad.addColorStop(0, `rgba(239, 68, 68, ${pt.intensity})`);
+                    grad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                }
+                
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(cx, cy, rad, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        function runLiveMatchSimulation() {
+            liveSimMinute = 0;
+            liveHomeScore = 0;
+            liveAwayScore = 0;
+            heatmapPoints = [];
+            
+            document.getElementById("live-match-score").textContent = "0 - 0";
+            document.getElementById("live-match-minute").textContent = "LIVE (0')";
+            
+            const timeline = document.getElementById("live-timeline-events");
+            timeline.innerHTML = `
+                <div class="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
+                    <span class="material-symbols-outlined text-primary text-[16px]">info</span>
+                    <span class="text-xs text-white">Match kickoff! Both teams take the pitch.</span>
+                </div>
+            `;
+
+            initHeatmap();
+
+            liveSimInterval = setInterval(() => {
+                liveSimMinute += 10;
+                if (liveSimMinute > 90) {
+                    clearInterval(liveSimInterval);
+                    liveSimInterval = null;
+                    document.getElementById("live-match-minute").textContent = "FULL TIME";
+                    document.getElementById("live-simulation-btn").textContent = "START SIMULATION";
+                    document.getElementById("live-simulation-btn").className = "px-4 py-2 bg-primary hover:bg-primary/80 text-black font-label-caps text-[10px] tracking-widest rounded-xl transition-all shadow-[0_0_15px_rgba(0,102,255,0.3)]";
+                    
+                    timeline.innerHTML = `
+                        <div class="flex items-center gap-3 bg-secondary/15 border border-secondary/20 p-3 rounded-xl">
+                            <span class="material-symbols-outlined text-secondary text-[16px]">sports</span>
+                            <span class="text-xs text-white font-bold">90' - Full time whistle blows! Final score ${liveHomeScore} - ${liveAwayScore}.</span>
+                        </div>
+                    ` + timeline.innerHTML;
+                    return;
+                }
+
+                document.getElementById("live-match-minute").textContent = `LIVE (${liveSimMinute}')`;
+
+                const count = Math.floor(Math.random() * 3) + 2;
+                for (let i = 0; i < count; i++) {
+                    const isHome = Math.random() < 0.55;
+                    const x = isHome ? (Math.random() * 50 + 35) : (Math.random() * 50 + 15);
+                    const y = Math.random() * 60 + 20;
+                    heatmapPoints.push({ x, y, isHome, radius: Math.random() * 25 + 15, intensity: Math.random() * 0.4 + 0.15 });
+                }
+                drawHeatmap();
+
+                const rand = Math.random();
+                if (rand < 0.18) {
+                    const isHome = Math.random() < 0.55;
+                    let scorer = "";
+                    if (isHome) {
+                        liveHomeScore++;
+                        scorer = Math.random() < 0.6 ? "Lionel Messi" : "Julián Álvarez";
+                        heatmapPoints.push({ x: 85, y: 50, isHome: true, radius: 45, intensity: 0.85 });
+                    } else {
+                        liveAwayScore++;
+                        scorer = Math.random() < 0.6 ? "Kylian Mbappé" : "Marcus Thuram";
+                        heatmapPoints.push({ x: 15, y: 50, isHome: false, radius: 45, intensity: 0.85 });
+                    }
+                    document.getElementById("live-match-score").textContent = `${liveHomeScore} - ${liveAwayScore}`;
+                    drawHeatmap();
+
+                    timeline.innerHTML = `
+                        <div class="flex items-center gap-3 bg-primary/20 border border-primary/30 p-3 rounded-xl animate-bounce">
+                            <span class="material-symbols-outlined text-primary text-[18px]">sports_soccer</span>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="text-xs font-bold text-white">${liveSimMinute}' - GOAL!</h5>
+                                <p class="text-[10px] text-on-surface-variant font-bold">${scorer} scores for ${isHome ? 'ARGENTINA' : 'FRANCE'}! (${liveHomeScore} - ${liveAwayScore})</p>
+                            </div>
+                        </div>
+                    ` + timeline.innerHTML;
+
+                } else if (rand < 0.38) {
+                    const isHome = Math.random() < 0.5;
+                    const player = isHome ? (Math.random() < 0.5 ? "Rodrigo De Paul" : "Cristian Romero") : (Math.random() < 0.5 ? "Aurélien Tchouaméni" : "Dayot Upamecano");
+                    
+                    timeline.innerHTML = `
+                        <div class="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
+                            <span class="material-symbols-outlined text-yellow-500 text-[16px]">note</span>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="text-xs font-bold text-white">${liveSimMinute}' - Yellow Card</h5>
+                                <p class="text-[10px] text-on-surface-variant">${player} (${isHome ? 'ARG' : 'FRA'}) receives a caution.</p>
+                            </div>
+                        </div>
+                    ` + timeline.innerHTML;
+
+                } else if (rand < 0.52) {
+                    const isHome = Math.random() < 0.5;
+                    timeline.innerHTML = `
+                        <div class="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
+                            <span class="material-symbols-outlined text-green-500 text-[16px]">sync</span>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="text-xs font-bold text-white">${liveSimMinute}' - Substitution</h5>
+                                <p class="text-[10px] text-on-surface-variant">Tactical change made by ${isHome ? 'ARGENTINA' : 'FRANCE'}.</p>
+                            </div>
+                        </div>
+                    ` + timeline.innerHTML;
+                }
+
+            }, 2000);
+        }
+
+        window.addEventListener("resize", drawHeatmap);
+
         // Initialize Page
         populateCustomDropdowns();
         loadSeasonFixtures();
+        initBracket();
+        populateComparisonDropdowns();
+        initHeatmap();
     </script>
 </body>
 </html>
